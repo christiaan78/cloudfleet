@@ -103,7 +103,7 @@ Cross-provider insights with metrics, logs, and security events visible from one
 ## Security Model
 
 <div style="border-left: 4px solid #00b894; background-color: #e8fdf5; padding: 0.75em 1em; border-radius: 4px; color: #1a1a1a;">
-<strong>💡 Tip:</strong> All secrets are managed via <strong>SOPS</strong> and encrypted before being stored in Git. No plaintext secrets are committed.
+All secrets are managed via <strong>SOPS</strong> and encrypted before being stored in Git. No plaintext secrets are committed.
 </div>
 
 **Key practices:**
