@@ -81,7 +81,7 @@ Cross-provider insights with metrics, logs, and security events visible from one
 | **1. Platform Infrastructure** | Declarative Kubernetes setup managed by Flux | Cloudfleet, Hetzner, Scaleway, OVH Cloud, StackIT |
 | **2. GitOps Lifecycle** | Everything as code, automated reconciliation | FluxCD, Helm, Kustomize |
 | **3. Observability** | Unified monitoring, logging, and alerting | Prometheus, Grafana, Loki, Alloy |
-| **4. Security** | Built-in zero-trust posture, secret management | SOPS, CrowdSec, Kyverno (baseline policies), Cloudflare DNS-01 |
+| **4. Security** | Built-in zero-trust posture, secret management | Hashicorp Vault, SOPS, CrowdSec, Kyverno (baseline policies), Cloudflare DNS-01 |
 | **5. Applications** | Workloads used to validate architecture | Podinfo, Traefik reverse proxy |
 | **6. Data Sovereignty** | EU-only providers and data residency compliance | EU regions only, Cloudflare EU zones |
 
