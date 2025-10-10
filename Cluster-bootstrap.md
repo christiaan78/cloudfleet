@@ -13,6 +13,26 @@ Create an account at cloudfleet.ai and follow the instructions to add a cluster 
 
 
 ## Flux setup
+### Determine project structure
+This project used the below structure. For the various options see [Flux repo structures](https://fluxcd.io/flux/guides/repository-structure/). For this project I have choosen the below setup:
+
+```
+./apps/
+├── base
+│   └── podinfo
+│       ├── kustomization.yaml
+│       ├── namespace.yaml
+│       ├── release.yaml
+│       └── repository.yaml
+├── production
+│   ├── kustomization.yaml
+│   └── podinfo-patch.yaml
+└── staging
+    ├── kustomization.yaml
+    └── podinfo-patch.yaml
+
+```
+
 ### Install the Flux CLI
 The flux command-line interface (CLI) is used to bootstrap and interact with Flux.
 
@@ -59,3 +79,10 @@ flux bootstrap github \
   --branch=main \
   --path=clusters/my-cluster \
   ```
+The bootstrapping process can take a few minutes on a new cluster as it needs to provision the first worker node for the FLux resources. 
+4. Validate the bootstrapping processing by checking if the flux-system pods are running:
+```bash
+kubectl get pods -A -o wide
+```
+
+  
