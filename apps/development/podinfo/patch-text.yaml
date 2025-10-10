@@ -6,11 +6,15 @@ spec:
   template:
     spec:
       containers:
-      - name: frontend
-        env:
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        - name: PODINFO_UI_MESSAGE
-          value: "Served by ${HOSTNAME} from node ${NODE_NAME}"
+        - name: frontend
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command: ["/bin/sh","-c"]
+          args:
+            - >
+              exec /podinfo
+              --port=9898
+              --ui-message="Served by ${HOSTNAME} from node ${NODE_NAME}"
