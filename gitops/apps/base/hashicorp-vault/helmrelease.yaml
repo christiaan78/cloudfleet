@@ -7,7 +7,7 @@ spec:
   timeout: 5m
   chart:
     spec:
-      chart: traefik
+      chart: vault
       version: "0.31.0"
       sourceRef:
         kind: HelmRepository

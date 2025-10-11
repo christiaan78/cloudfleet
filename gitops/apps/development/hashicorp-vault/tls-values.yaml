@@ -7,7 +7,6 @@ spec:
   values:
     server:
       ui: true
-
       extraVolumes:
         - type: secret
           name: vault-server-tls
