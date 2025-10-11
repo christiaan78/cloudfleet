@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: cert-manager
 resources:
   - ../../base/cert-manager
+  - namespace.yaml
