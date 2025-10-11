@@ -11,7 +11,7 @@ data:
     server:
       ui: true
 
-      # Mount cert-manager Secret at /vault/tls
+      # mount the cert-manager Secret at /vault/tls
       extraVolumes:
         - name: vault-tls
           secret:
@@ -23,7 +23,7 @@ data:
 
       standalone:
         enabled: true
-        config: |
+        config: |-
           ui = true
           listener "tcp" {
             address            = "0.0.0.0:8200"
