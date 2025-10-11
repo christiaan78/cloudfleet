@@ -1,0 +1,9 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: vault-tls
+  namespace: ingress-traefik
+spec:
+  serverName: hashicorp-vault.apps.svc
+  rootCAsSecrets:
+    - name: vault-ca
