@@ -5,20 +5,25 @@ metadata:
   namespace: apps
 data:
   values.yaml: |
+    global:
+      tlsDisable: false
+
     injector:
       enabled: false
 
     server:
       ui: true
+      extraEnvironmentVars:
+        VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
 
-      # mount the cert-manager Secret at /vault/tls
-      extraVolumes:
-        - name: vault-tls
+      volumes:
+        - name: userconfig-vault-server-tls
           secret:
-            secretName: vault-server-tls
-      extraVolumeMounts:
-        - name: vault-tls
-          mountPath: /vault/tls
+            secretName: vault-server-tls    # your cert-manager Secret
+
+      volumeMounts:
+        - name: userconfig-vault-server-tls
+          mountPath: /vault/userconfig/vault-server-tls
           readOnly: true
 
       standalone:
@@ -27,10 +32,11 @@ data:
           ui = true
           listener "tcp" {
             address            = "0.0.0.0:8200"
+            cluster_address    = "0.0.0.0:8201"
             tls_disable        = 0
-            tls_cert_file      = "/vault/tls/tls.crt"
-            tls_key_file       = "/vault/tls/tls.key"
-            tls_client_ca_file = "/vault/tls/ca.crt"
+            tls_cert_file      = "/vault/userconfig/vault-server-tls/vault.crt"
+            tls_key_file       = "/vault/userconfig/vault-server-tls/vault.key"
+            tls_client_ca_file = "/vault/userconfig/vault-server-tls/vault.ca"
           }
           storage "raft" {
             path = "/vault/data"
