@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Simple manager for Traefik port-forward (no hosts editing).
 # Usage:
-#   Tools/scripts/port-forwarding/port-forward.sh start
-#   Tools/scripts/port-forward-forwarding/port-forward.sh stop
-#   Tools/scripts/port-forwarding/port-forward.sh status
+#   tools/scripts/port-forwarding/port-forward.sh start
+#   tools/scripts/port-forward-forwarding/port-forward.sh stop
+#   tools/scripts/port-forwarding/port-forward.sh status
 #
 # Note: add hostnames to your WORKSTATION's /etc/hosts, e.g.:
 #   127.0.0.1 development.vault.internal grafana.internal
