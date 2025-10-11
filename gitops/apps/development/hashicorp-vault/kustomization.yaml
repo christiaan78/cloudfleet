@@ -5,3 +5,5 @@ resources:
   - ../../base/hashicorp-vault
   - namespace.yaml
   - ingress.yaml
+patchesStrategicMerge:
+  - tls-values.yaml

@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hashicorp-vault
+  namespace: apps
+spec:
+  values:
+    server:
+      ui: true
+
+      extraVolumes:
+        - type: secret
+          name: vault-server-tls
+          path: /vault/tls
+
+      # Standalone config (adapt to 'ha.config' when using HA mode)
+      standalone:
+        enabled: true
+        config: |
+          ui = true
+          listener "tcp" {
+            address            = "0.0.0.0:8200"
+            tls_disable        = 0
+            tls_cert_file      = "/vault/tls/tls.crt"
+            tls_key_file       = "/vault/tls/tls.key"
+            tls_client_ca_file = "/vault/tls/ca.crt"
+          }
+          storage "raft" {
+            path = "/vault/data"
+          }
