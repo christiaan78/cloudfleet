@@ -2,7 +2,6 @@ spec:
   values:
     server:
       ui: true
-
       extraVolumes:
         - name: vault-tls
           secret:
@@ -11,7 +10,6 @@ spec:
         - name: vault-tls
           mountPath: /vault/tls
           readOnly: true
-
       standalone:
         enabled: true
         config: |

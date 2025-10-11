@@ -13,4 +13,4 @@ patches:
       kind: HelmRelease
       name: hashicorp-vault
       namespace: apps
-    path: patch-tls-values.yaml
+    path: patches/patch-tls-values.yaml
