@@ -5,9 +5,7 @@ metadata:
   namespace: apps
   annotations:
     kubernetes.io/ingress.class: traefik
-    # USE HTTPS to the Service (Vault now serves only HTTPS)
     traefik.ingress.kubernetes.io/service.serversscheme: https
-    # USE the ServersTransport we created (with the CA)
     traefik.ingress.kubernetes.io/service.serverstransport: ingress-traefik-vault-tls@kubernetescrd
 spec:
   rules:
