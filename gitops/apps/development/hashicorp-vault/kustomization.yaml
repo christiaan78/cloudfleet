@@ -1,8 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: apps
+
 resources:
   - ../../base/hashicorp-vault
   - namespace.yaml
   - ingress.yaml
-  - vault-values-configmap.yaml
+
+configMapGenerator:
+  - name: vault-values
+    namespace: apps
+    files:
+      - values.yaml=values.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

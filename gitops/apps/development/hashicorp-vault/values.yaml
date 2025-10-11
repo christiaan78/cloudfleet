@@ -1,0 +1,37 @@
+injector:
+  enabled: false
+
+server:
+  ui: true
+
+  volumes:
+    - name: userconfig-vault-server-tls
+      secret:
+        secretName: vault-server-tls
+
+  volumeMounts:
+    - name: userconfig-vault-server-tls
+      mountPath: /vault/userconfig/vault-server-tls
+      readOnly: true
+
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-server-tls/ca.crt
+
+  standalone:
+    enabled: true
+    config: |-
+      ui = true
+      listener "tcp" {
+        address            = "0.0.0.0:8200"
+        cluster_address    = "0.0.0.0:8201"
+        tls_disable        = 0
+        tls_cert_file      = "/vault/userconfig/vault-server-tls/tls.crt"
+        tls_key_file       = "/vault/userconfig/vault-server-tls/tls.key"
+        tls_client_ca_file = "/vault/userconfig/vault-server-tls/ca.crt"
+      }
+      storage "raft" {
+        path = "/vault/data"
+      }
+
+global:
+  tlsDisable: false
