@@ -4,3 +4,4 @@ namespace: monitoring
 resources:
   - ../../base/kube-prometheus-stack
   - namespace.yaml
+  - ingress-grafana.yaml
