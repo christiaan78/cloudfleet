@@ -1,12 +1,15 @@
 # Used Helm charts in this project
 
 - Vault: https://github.com/hashicorp/vault-helm
+- Vault Secrets Operator: https://github.com/hashicorp-education/learn-vault-secrets-operator
 - Kube Prometheus Stack: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 - PodInfo: https://github.com/stefanprodan/podinfo/tree/master/charts/podinfo
 - Traefik; https://github.com/traefik/traefik-helm-chart
 
+
 # ArtifactHUB links
 - Vault: https://artifacthub.io/packages/helm/hashicorp/vault 
+- Vault Secrets Operator: https://artifacthub.io/packages/helm/hashicorp/vault-secrets-operator
 - Kube Prometheus Stack: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
 - PodInfo: https://artifacthub.io/packages/helm/podinfo/podinfo
 - Hetzner Cloud CSI: https://artifacthub.io/packages/helm/hcloud/hcloud-csi
