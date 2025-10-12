@@ -50,6 +50,12 @@ server:
     timeoutSeconds: 5
     failureThreshold: 3
 
+  # IMPORTANT: tell Traefik to use HTTPS upstream + your ServersTransport
+  service:
+    annotations:
+      traefik.ingress.kubernetes.io/service.serversscheme: https
+      traefik.ingress.kubernetes.io/service.serverstransport: ingress-traefik-vault-tls@kubernetescrd
+
   standalone:
     enabled: true
     config: |-
