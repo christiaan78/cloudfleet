@@ -1,0 +1,3 @@
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
+*.sh linguist-detectable=false
