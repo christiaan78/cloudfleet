@@ -1,4 +1,4 @@
-# 🌍 Cloudfleet Multi-Cloud Kubernetes PoC
+# Cloudfleet Multi-Cloud Kubernetes PoC
 
 <div style="border-left: 4px solid #1e90ff; background-color: #eaf4ff; padding: 0.75em 1em; border-radius: 4px; color: #1a1a1a;">
 This Proof-of-Concept (PoC) demonstrates that a secure, production-grade Kubernetes platform can be built entirely on <strong>European cloud providers</strong> — managed declaratively through FluxCD and without reliance on US hyperscalers.
