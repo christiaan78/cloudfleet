@@ -5,5 +5,5 @@ resources:
   - vault-authmount.yaml
   - vault-authconfig.yaml
   - vault-secretsengine.yaml
-  - policies
-  - authroles
+  #- policies
+  #- authroles
