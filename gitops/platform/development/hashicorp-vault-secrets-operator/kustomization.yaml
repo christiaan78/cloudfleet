@@ -5,5 +5,3 @@ namespace: platform
 resources:
   - ../../base/hashicorp-vault-secrets-operator
   - namespace.yaml
-  - policies
-  - authroles
