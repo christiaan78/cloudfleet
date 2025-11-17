@@ -94,13 +94,148 @@ Once unsealed, log in using the **root token** shown during initialization.
   vault login <ROOT_TOKEN>
   ```
 
-> The root token is powerful. In later phases, create scoped policies and non-root admin/service tokens, then store/rotate secrets centrally (Vault), not in Git.
+Perfect, Christiaan — let’s extend your README with the next steps we’ve been working through. I’ll keep the style consistent with your existing documentation and add the commands and context we discussed.
 
 ---
 
-## 7) Next steps (to be detailed)
+## 7) Setup Vault CLI and test connection
 
-*This section will be expanded with concrete manifests (Vault policy, auth config, `SecretStore`, `ExternalSecret`) in the next phase.*
+Install the Vault CLI on your workstation:  
+👉 [Download instructions](https://developer.hashicorp.com/vault/install#linux)
+
+To connect from outside the cluster, use **port‑forwarding**:
+
+```bash
+kubectl -n platform port-forward svc/hashicorp-vault 8200:8200
+```
+
+Then configure your environment:
+
+```bash
+# Point Vault CLI to the forwarded port
+export VAULT_ADDR=https://127.0.0.1:8200
+
+# Extract the CA certificate from the vault-internal-ca secret
+kubectl -n platform get secret vault-internal-ca \
+  -o jsonpath='{.data.ca\.crt}' | base64 -d > vault-ca-chain.crt
+
+# Tell Vault CLI to trust this CA
+export VAULT_CACERT=$(pwd)/vault-ca-chain.crt
+
+# Login with your root token (from init)
+vault login <ROOT_TOKEN>
+```
+
+Validate connectivity:
+
+```bash
+vault status
+```
+
+---
+
+  ## 8) Enable Kubernetes auth and create policies/roles
+
+  Use the root token only for bootstrap. Once Kubernetes auth is enabled, workloads will authenticate via service accounts.
+
+  ### a) Enable Kubernetes auth
+  ```bash
+  vault auth enable kubernetes
+  ```
+
+  ### b) Configure Kubernetes auth
+  ```bash
+  vault write auth/kubernetes/config \
+      kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
+      kubernetes_ca_cert=@vault-ca-chain.crt \
+      token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
+  ```
+
+  ### c) Create an admin policy (example)
+  Save as `admin.hcl`:
+  ```hcl
+  path "*" {
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+  ```
+
+  Load it:
+  ```bash
+  vault policy write admin admin.hcl
+  ```
+
+  ### d) Create an admin user (Userpass)
+  Enable the Userpass auth method (if not already enabled):
+
+  ```bash
+  vault auth enable userpass
+  ```
+  Create a user bound to the admin policy:
+
+  ```bash
+  vault write auth/userpass/users/<CHANGEUSERNAME> \
+      password="SuperSecret" \
+      policies=admin
+  ```
+  Now you can log into the Vault UI with:
+
+  Username: <USERNAME>
+
+  Password: SuperSecret
+
+  Policy: admin (full rights)
+
+  ### e) Create the operator policy (example)
+  Save as `vso-operator.hcl`:
+  
+  ```hcl
+  path "secret/*" {
+    capabilities = ["read", "list"]
+  }
+  ```
+
+  Load it:
+  ```bash
+  vault policy write vso-operator vso-operator.hcl
+  ```
+
+  ### f) Create the operator role bound to the operator’s service account
+  ```bash
+  vault write auth/kubernetes/role/vso-operator \
+      bound_service_account_names=hashicorp-vault-secrets-operator-controller-manager \
+      bound_service_account_namespaces=platform \
+      policies=vso-operator \
+      ttl=24h
+      audience="vault"
+  ```
+
+---
+
+## 9) Verify operator and workloads can authenticate
+
+Before deploying the CRDs (`VaultConnection` and `VaultAuth`):
+
+- **Manual check with Vault CLI:**
+  ```bash
+  vault write auth/kubernetes/login \
+      role=vso-operator \
+      jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+  ```
+  This should return a Vault token scoped to the `vso-operator` policy.
+
+- **Operator logs:**  
+  Once you deploy the CRDs, check the operator logs to confirm it authenticates successfully.
+
+---
+
+## ✅ Summary of bootstrap additions
+- Step 7: Install Vault CLI, port‑forward, configure CA, test with `vault status`.  
+- Step 8: Use root token to enable Kubernetes auth, create admin + operator policies/roles.  
+- Step 9: Verify authentication manually before deploying CRDs.  
+
+---
+
+👉 Would you like me to also add a **“Best Practices” section** at the end of the README (e.g., root token usage, short‑lived bootstrap tokens, revocation after bootstrap), so your dev cluster doc already nudges toward production‑grade habits?
 
 ---
 

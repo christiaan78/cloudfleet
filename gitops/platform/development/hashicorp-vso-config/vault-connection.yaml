@@ -1,7 +1,7 @@
 apiVersion: secrets.hashicorp.com/v1alpha1
 kind: VaultConnection
 metadata:
-  name: platform
+  name: vault-connection
   namespace: platform
 spec:
   address: https://hashicorp-vault.platform.svc:8200  
@@ -10,8 +10,3 @@ spec:
     caRef:
       name: vault-internal-ca
       key: ca.crt
-  # One of the supported credentials mechanisms; example using a Kubernetes secret with a token
-  credentials:
-    secretRef:
-      name: vault-operator-token
-      key: token
