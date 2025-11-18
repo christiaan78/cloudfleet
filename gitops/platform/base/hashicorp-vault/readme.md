@@ -78,18 +78,13 @@ Repeat on each Vault pod (if HA) or after restarts (unless using auto-unseal).
 
 ---
 
-## 6) Log in with the root token
-
-Once unsealed, log in using the **root token** shown during initialization.
-
-```bash
-export VAULT_ADDR=http://localhost:8200
-vault login <ROOT_TOKEN>
-```
+**THE BELOW STEPS ARE THE MANUAL STEPS FOR A MINIMAL BOOTSTRAP. INSTEAD, THE BOOTSTRAP CAN ALSO BE PERFORMED BY THE SCRIPT PROVIDED IN TOOLS >> MANIIFESTS >> VAULT-BOOTSTRAP**
 
 ---
 
-## 7) Setup Vault CLI and test connection
+When you are not using the bootstrap script, continue with the steps below:
+
+## 6) Setup Vault CLI and test connection
 
 Instead of installing Vault CLI locally, use the **vault-cli pod** stored in your repo under `/tools/manifests/vault-cli.yaml`. Apply it:
 
@@ -109,7 +104,7 @@ vault status
 
 ---
 
-## 8) Enable Kubernetes auth and create policies/roles
+## 7) Enable Kubernetes auth and create policies/roles
 
 Use the root token only for bootstrap.
 
@@ -179,11 +174,7 @@ vault write auth/kubernetes/role/vso-operator \
 
 ---
 
-Here’s how you can expand **Step 9** with the option to validate accounts via the Vault UI, keeping the same style as the rest of your README:
-
----
-
-## 9) Verify operator and user accounts can authenticate
+## 8) Verify operator and user accounts can authenticate
 
 - **Manual check with Vault CLI (operator role):**
   ```bash
@@ -236,7 +227,7 @@ vault write auth/kubernetes/role/grafana \
     audience="<aud-from-token>"
 ```
 ---
-## 10) Cleanup
+## 9) Cleanup
 
 Once bootstrap is complete:
 
