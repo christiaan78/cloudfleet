@@ -4,7 +4,7 @@ namespace: ingress-traefik
 resources:
   - ../../base/traefik
   - namespace.yaml
-  #- vault-ca-secret.yaml
+  - vault-ca-secret.yaml
   - serverstransport-vault.yaml
 
 patchesStrategicMerge:
