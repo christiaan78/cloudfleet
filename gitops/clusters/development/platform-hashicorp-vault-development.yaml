@@ -13,3 +13,4 @@ spec:
     name: flux-system
   dependsOn:
   - name: infrastructure-tls-vault-development
+  - name: infrastructure-storage-hcloud-csi-development
