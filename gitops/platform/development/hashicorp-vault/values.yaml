@@ -7,10 +7,10 @@ global:
 server:
   ui: true
 
-  # roll pods automatically when spec changes
+   roll pods automatically when spec changes
   updateStrategyType: RollingUpdate
 
-  # mount cert-manager's TLS secret
+   mount cert-manager's TLS secret
   volumes:
     - name: userconfig-vault-server-tls
       secret:
@@ -21,11 +21,11 @@ server:
       mountPath: /vault/userconfig/vault-server-tls
       readOnly: true
 
-  # make CLI/probes trust the CA by default
+   make CLI/probes trust the CA by default
   extraEnvironmentVars:
     VAULT_CACERT: /vault/userconfig/vault-server-tls/ca.crt
 
-  # override probes to ignore VAULT_CACERT (prevents TLS probe failures)
+   override probes to ignore VAULT_CACERT (prevents TLS probe failures)
   readinessProbe:
     enabled: true
     exec:
@@ -50,7 +50,7 @@ server:
     timeoutSeconds: 5
     failureThreshold: 10
 
-  # IMPORTANT: tell Traefik to use HTTPS upstream + your ServersTransport
+   IMPORTANT: tell Traefik to use HTTPS upstream + your ServersTransport
   service:
     annotations:
       "traefik.ingress.kubernetes.io/service.serversscheme": https
@@ -83,10 +83,10 @@ server:
     annotations:
       "helm.sh/resource-policy": keep
       
-  #resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 250m
-  #  limits:
-  #    memory: 256Mi
-  #    cpu: 250m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
