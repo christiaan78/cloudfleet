@@ -45,10 +45,10 @@ server:
         - /bin/sh
         - -ec
         - 'env -u VAULT_CACERT vault status -tls-skip-verify'
-    initialDelaySeconds: 10
-    periodSeconds: 10
+    initialDelaySeconds: 120
+    periodSeconds: 20
     timeoutSeconds: 5
-    failureThreshold: 3
+    failureThreshold: 10
 
   # IMPORTANT: tell Traefik to use HTTPS upstream + your ServersTransport
   service:
@@ -82,3 +82,11 @@ server:
     storageClass: hcloud-volumes
     annotations:
       "helm.sh/resource-policy": keep 
+      
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
