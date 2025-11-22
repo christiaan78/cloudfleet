@@ -73,10 +73,16 @@ spec:
     - name: bootstrap-scripts
       mountPath: /scripts
       readOnly: true
+    - name: vault-server-tls
+      mountPath: /vault/userconfig/vault-server-tls
+      readOnly: true
   volumes:
   - name: vault-ca
     secret:
       secretName: vault-internal-ca
+  - name: vault-server-tls
+    secret:
+      secretName: vault-server-tls
   - name: bootstrap-scripts
     configMap:
       name: vault-bootstrap
