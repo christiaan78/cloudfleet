@@ -59,19 +59,21 @@ server:
   ha:
     enabled: true
     replicas: 3
-    config: |-
-      ui = true
-      listener "tcp" {
-        address            = "0.0.0.0:8200"
-        cluster_address    = "0.0.0.0:8201"
-        tls_disable        = 0
-        tls_cert_file      = "/vault/userconfig/vault-server-tls/tls.crt"
-        tls_key_file       = "/vault/userconfig/vault-server-tls/tls.key"
-        tls_client_ca_file = "/vault/userconfig/vault-server-tls/ca.crt"
-      }
-      storage "raft" {
-        path = "/vault/data"
-      }
+    raft:
+      enabled: true
+      config: |-
+        ui = true
+        listener "tcp" {
+          address            = "0.0.0.0:8200"
+          cluster_address    = "0.0.0.0:8201"
+          tls_disable        = 0
+          tls_cert_file      = "/vault/userconfig/vault-server-tls/tls.crt"
+          tls_key_file       = "/vault/userconfig/vault-server-tls/tls.key"
+          tls_client_ca_file = "/vault/userconfig/vault-server-tls/ca.crt"
+        }
+        storage "raft" {
+          path = "/vault/data"
+        }
 
   dataStorage:
     enabled: true
