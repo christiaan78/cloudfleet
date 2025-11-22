@@ -53,8 +53,8 @@ server:
   # IMPORTANT: tell Traefik to use HTTPS upstream + your ServersTransport
   service:
     annotations:
-      traefik.ingress.kubernetes.io/service.serversscheme: https
-      traefik.ingress.kubernetes.io/service.serverstransport: ingress-traefik-vault-tls@kubernetescrd
+      "traefik.ingress.kubernetes.io/service.serversscheme": https
+      "traefik.ingress.kubernetes.io/service.serverstransport": ingress-traefik-vault-tls@kubernetescrd
 
   ha:
     enabled: true
@@ -81,7 +81,7 @@ server:
     accessMode: ReadWriteOnce
     storageClass: hcloud-volumes
     annotations:
-      "helm.sh/resource-policy": keep 
+      "helm.sh/resource-policy": keep
       
   resources:
     requests:
