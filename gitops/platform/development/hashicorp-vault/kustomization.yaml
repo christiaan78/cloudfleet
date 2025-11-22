@@ -3,15 +3,15 @@ kind: Kustomization
 namespace: platform
 
 resources:
-  - ../../base/hashicorp-vault
-  - namespace.yaml
-  - ingress.yaml
+  #- ../../base/hashicorp-vault
+  #- namespace.yaml
+  #- ingress.yaml
 
 configMapGenerator:
-  - name: vault-values
-    namespace: platform
-    files:
-      - values.yaml=values.yaml
+ #- name: vault-values
+ #   namespace: platform
+ #   files:
+ #     - values.yaml=values.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
