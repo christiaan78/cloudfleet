@@ -9,7 +9,7 @@ This repository contains the full infrastructure, Kubernetes manifests and tooli
 
 - Build a real-world multi-cloud platform (Hetzner, Scaleway)
 - Use GitOps (Flux) as the control plane for all Kubernetes workloads
-- Standardize infrastructure using Terraform and reusable modules
+- Standardize infrastructure using Terraform and reusable modules (future)
 - Deploy production-style services (Vault, Traefik, Prometheus stack, etc.)
 - Practice secure secret management using SOPS and Vault
 - Host real applications, including Nextcloud and internal developer tooling
@@ -19,15 +19,14 @@ This repository contains the full infrastructure, Kubernetes manifests and tooli
 
 ## 🧩 Architecture Overview
 
-High-level components:
-- **Infrastructure:** Terraform modules for cloud providers and networking  
+High-level components:  
 - **Compute:** Kubernetes clusters provisioned with Cloudfleet  
 - **GitOps:** FluxCD controlling all YAML/Helm-based deployments  
 - **Networking:** Traefik ingress, internal/external DNS  
-- **Security:** Vault, SOPS, age, mTLS, Cloudflare  
+- **Security:** Vault, SOPS, mTLS, Cloudflare (planned) 
 - **Observability:** Prometheus, Alertmanager, Grafana  
 - **Applications:** Podinfo, Nextcloud (planned), internal tools, AI workloads (planned)
-
+- **Infrastructure:** Terraform modules for cloud providers and networking (planned)
 ➡️ Detailed architecture diagrams can be found in `/docs/architecture.md`.
 
 ---
