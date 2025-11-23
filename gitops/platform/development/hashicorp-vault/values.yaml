@@ -137,8 +137,8 @@ server:
 
   resources:
     requests:
-      memory: 4Gi
-      cpu: 1000Mi
+      memory: 500Mi
+      cpu: 1000M
     limits:
-      memory: 8Gi
-      cpu: 2000Mi
+      memory: 1Gi
+      cpu: 2000M
