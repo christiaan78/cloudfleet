@@ -274,5 +274,6 @@ This ensures you’re no longer relying on the root token or temporary CLI pod, 
 - **PVC Pending:** ensure a default StorageClass exists.  
 - **Cannot reach UI:** confirm port-forward is active.  
 - **Unseal prompts keep appearing:** all pods must be unsealed; consider HA vs standalone mode.
+- **Raft joining fails:** If Raft join fails with x509: certificate is valid for … not …, check SANs in the mounted cert.
 
 ---
