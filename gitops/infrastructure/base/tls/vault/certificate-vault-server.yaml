@@ -8,13 +8,19 @@ spec:
   issuerRef:
     kind: Issuer
     name: vault-internal-ca-issuer
+  commonName: hashicorp-vault.platform.svc
   dnsNames:
+    # Service names
     - hashicorp-vault.platform.svc
     - hashicorp-vault.platform.svc.cluster.local
     - "*.platform.svc"
     - "*.platform.svc.cluster.local"
+    # Pod DNS names for Raft peers
+    - hashicorp-vault-0.hashicorp-vault-internal
+    - hashicorp-vault-1.hashicorp-vault-internal
+    - hashicorp-vault-2.hashicorp-vault-internal
   ipAddresses:
-  - 127.0.0.1
+    - 127.0.0.1
   usages:
     - digital signature
     - key encipherment
