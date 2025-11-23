@@ -9,14 +9,9 @@ The jobs run once to configure Vault authentication methods, policies, and roles
 - Bind policies to Vault roles used by the Vault Secrets Operator (VSO).
 - Optionally create a userpass admin account for manual access.
 
-## Workflow (see readme.md in platform/base/hashicorp-vault for detailed instructions for step 1 to 3)
-1. **Init & unseal Vault manually** (outside GitOps).
-2. **Create a bootstrap policy** in Vault
-3. **Create a scoped bootstrap token** in Vault (bound to the `bootstrap-admin` policy).
-4. **Store the token in Kubernetes** as a Secret (`vault-bootstrap-token`).
-5. **Create a username and password** as a Secret in Vault (optional but preferred instead of using the root token)
-6. **Apply the ConfigMap** containing the bootstrap script.
-7. **Apply the Job** to run the script once.  
+## Workflow 
+1. **Follow the steps** in platform/base/hashicorp-vault Readme to initialize Vault and perform the actions that can only done with a root token. 
+2. **Run the Job** by incrementing the job version number. 
    - The Job uses the token and script to configure Vault.
    - Logs show `Bootstrap complete.` when successful.
 

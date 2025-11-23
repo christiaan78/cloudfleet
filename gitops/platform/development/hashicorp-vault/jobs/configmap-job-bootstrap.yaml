@@ -13,10 +13,6 @@ data:
     export VAULT_ADDR=https://hashicorp-vault.platform.svc:8200
     export VAULT_CACERT=/vault/ca/ca.crt
 
-    vault auth enable kubernetes || echo "Kubernetes auth already enabled"
-
-    vault secrets enable -path=secret kv-v2 || echo "KV engine already enabled"
-
     vault write auth/kubernetes/config \
         kubernetes_host="https://<apiserver-host>:443" \
         kubernetes_ca_cert=@/vault/ca/ca.crt \
@@ -28,7 +24,6 @@ data:
     }
     EOF
 
-    vault auth enable userpass || echo "Userpass already enabled"
     vault write auth/userpass/users/$BOOTSTRAP_USER \
         password="$BOOTSTRAP_PASS" \
         policies=admin

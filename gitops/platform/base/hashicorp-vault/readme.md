@@ -144,14 +144,27 @@ kubectl -n platform create secret generic vault-bootstrap-token \
   --from-literal=token=<bootstrap-token>
 ```
 
-#### 6d) (Optional) Create a username and password so we can disable the root token but still have admin access
+#### 6d) Enable secret engine KV v2
+```bash
+vault secrets enable -path=secret kv-v2
+```
+
+### 6e) Enable auth methods
+```bash
+vault auth enable kubernetes
+vault auth enable userpass
+```
+
+#### 6f) (Optional) Create a username and password so we can disable the root token but still have admin access
 ```bash
 kubectl -n platform create secret generic vault-bootstrap-user \
   --from-literal=username=<USERNAME> \
   --from-literal=password=<PASSWORD>
 ```
+## 7) Run the bootstrap job
+Increment the job version to trigger a new job. 
 ---
-## 7) Verify operator and user accounts can authenticate
+## 8) Verify operator and user accounts can authenticate
 
 - **Manual check with Vault CLI (operator role):**
   ```bash
