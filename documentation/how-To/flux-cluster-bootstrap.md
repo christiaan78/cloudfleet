@@ -1,4 +1,4 @@
-# Cloudfleet Multi-Cloud Kubernetes Cluster
+# Cloudfleet Kubernetes Cluster
 
 ## Cloudfleet setup
 
