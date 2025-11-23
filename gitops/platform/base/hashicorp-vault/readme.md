@@ -51,6 +51,8 @@ Open: **[http://localhost:8200](http://localhost:8200)**
 
 ## 4) Initialize Vault (Shamir unseal keys)
 
+**Note: even on a HA multi node setup you only have to init on the vault-0 pod**
+
 **Option A:**  
 On the UI (or via CLI), click **Initialize** and choose:
 
@@ -73,8 +75,9 @@ kubectl -n platform exec -it hashicorp-vault-0 -- \
 
 ## 5) Unseal Vault
 
+### 5a) Unseal Vault-0 (Leader) pod:
+
 Enter **T** of the **N** unseal keys until the status changes to **Unsealed**.  
-Repeat on each Vault pod (if HA) or after restarts (unless using auto-unseal).
 ```bash
 kubectl -n platform exec -it hashicorp-vault-0 -- sh
 ```
@@ -82,6 +85,18 @@ kubectl -n platform exec -it hashicorp-vault-0 -- sh
 vault operator unseal
 ```
 
+### 5b) Join peers in HA cluster
+```bash
+kubectl -n platform exec -it hashicorp-vault-1 -- \
+  vault operator raft join \
+    -leader-ca-cert=@/vault/userconfig/vault-internal-ca/ca.crt \
+    https://hashicorp-vault-0.hashicorp-vault-internal:8200
+```
+
+### 5c) Unseal the joined pods
+```bash
+kubectl -n platform exec -it hashicorp-vault-1 -- vault operator unseal
+```
 ---
 
 **THE BELOW STEPS ARE THE MANUAL STEPS FOR A MINIMAL BOOTSTRAP. INSTEAD, THE BOOTSTRAP CAN ALSO BE PERFORMED BY THE SCRIPT PROVIDED IN TOOLS >> MANIIFESTS >> VAULT-BOOTSTRAP**

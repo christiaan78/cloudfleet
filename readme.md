@@ -1,13 +1,13 @@
 # Cloud-Agnostic Platform
 
 A personal, evolving platform-engineering project focused on building an automated, secure, and cloud-agnostic application platform using GitOps.  
-This repository contains the full infrastructure, Kubernetes manifests, Terraform modules, documentation, and tooling that power the platform.
+This repository contains the full infrastructure, Kubernetes manifests and tooling that power the platform.
 
 ---
 
 ## ✨ Goals
 
-- Build a real-world multi-cloud platform (Hetzner, Scaleway, local clusters)
+- Build a real-world multi-cloud platform (Hetzner, Scaleway)
 - Use GitOps (Flux) as the control plane for all Kubernetes workloads
 - Standardize infrastructure using Terraform and reusable modules
 - Deploy production-style services (Vault, Traefik, Prometheus stack, etc.)
