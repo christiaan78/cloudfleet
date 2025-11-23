@@ -1,0 +1,109 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-bootstrap-job
+  namespace: platform
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: bootstrap
+        image: hashicorp/vault:1.20.4
+        command: ["sh", "-c"]
+        args:
+          - apk add --no-cache jq && sh /scripts/bootstrap.sh
+        env:
+        - name: VAULT_ADDR
+          value: https://hashicorp-vault.platform.svc:8200
+        - name: VAULT_CACERT
+          value: /vault/ca/ca.crt
+        - name: VAULT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: vault-bootstrap-token
+              key: token
+        - name: BOOTSTRAP_USER
+          valueFrom:
+            secretKeyRef:
+              name: vault-bootstrap-user
+              key: username
+        - name: BOOTSTRAP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: vault-bootstrap-user
+              key: password
+        volumeMounts:
+        - name: vault-ca
+          mountPath: /vault/ca
+          readOnly: true
+        - name: bootstrap-scripts
+          mountPath: /scripts
+          readOnly: true
+        - name: vault-server-tls
+          mountPath: /vault/userconfig/vault-server-tls
+          readOnly: true
+      volumes:
+      - name: vault-ca
+        secret:
+          secretName: vault-internal-ca
+      - name: vault-server-tls
+        secret:
+          secretName: vault-server-tls
+      - name: bootstrap-scripts
+        configMap:
+          name: vault-bootstrap
+          defaultMode: 0755
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-bootstrap
+  namespace: platform
+data:
+  bootstrap.sh: |
+    #!/bin/sh
+    set -e
+    echo "Bootstrapping Vault..."
+
+    export VAULT_ADDR=https://hashicorp-vault.platform.svc:8200
+    export VAULT_CACERT=/vault/ca/ca.crt
+
+    vault auth enable kubernetes || echo "Kubernetes auth already enabled"
+
+    vault write auth/kubernetes/config \
+        kubernetes_host="https://<apiserver-host>:443" \
+        kubernetes_ca_cert=@/vault/ca/ca.crt \
+        token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
+
+    cat <<EOF | vault policy write admin -
+    path "*" {
+      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+    }
+    EOF
+
+    vault auth enable userpass || echo "Userpass already enabled"
+    vault write auth/userpass/users/$BOOTSTRAP_USER \
+        password="$BOOTSTRAP_PASS" \
+        policies=admin
+
+
+    cat <<EOF | vault policy write vso-operator -
+    path "secret/*" {
+      capabilities = ["read", "list"]
+    }
+    EOF
+
+    TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    PAYLOAD=$(echo "$TOKEN" | cut -d. -f2)
+    AUD=$(echo "$PAYLOAD" | base64 -d | jq -r .aud)
+
+    vault write auth/kubernetes/role/vso-operator \
+        bound_service_account_names=hashicorp-vault-secrets-operator-controller-manager \
+        bound_service_account_namespaces=platform \
+        policies=vso-operator \
+        ttl=24h \
+        audience="$AUD"
+
+    echo "Bootstrap complete."
