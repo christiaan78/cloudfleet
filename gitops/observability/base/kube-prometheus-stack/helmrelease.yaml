@@ -13,3 +13,8 @@ spec:
         kind: HelmRepository
         name: kube-prometheus-stack
       interval: 5m
+
+  valuesFrom:
+    - kind: ConfigMap
+      name: kube-prometheus-stack-values
+      valuesKey: values.yaml

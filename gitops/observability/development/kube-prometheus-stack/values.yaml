@@ -1,0 +1,26 @@
+grafana:
+  enabled: true
+
+  admin:
+    existingSecret: grafana
+    userKey: admin-user
+    passwordKey: admin-password
+
+  # Optional: expose Grafana via a Service
+  service:
+    type: ClusterIP
+    port: 80
+
+  # Optional: persistence
+  persistence:
+    enabled: false
+
+  # Optional: ingress (if you use Traefik)
+  ingress:
+    enabled: false
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts:
+      - grafana.local
+    paths:
+      - /
