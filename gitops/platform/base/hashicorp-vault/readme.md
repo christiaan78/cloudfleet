@@ -98,104 +98,60 @@ kubectl -n platform exec -it hashicorp-vault-1 -- \
 kubectl -n platform exec -it hashicorp-vault-1 -- vault operator unseal
 ```
 ---
-
-**THE BELOW STEPS ARE THE MANUAL STEPS FOR A MINIMAL BOOTSTRAP. INSTEAD, THE BOOTSTRAP CAN ALSO BE PERFORMED BY THE SCRIPT PROVIDED IN TOOLS >> MANIIFESTS >> VAULT-BOOTSTRAP**
-
----
-
-When you are not using the bootstrap script, continue with the steps below:
-
-## 6) Setup Vault CLI and test connection
-
-Instead of installing Vault CLI locally, use the **vault-cli pod** stored in your repo under `/tools/manifests/vault-cli.yaml`. Apply it:
-
+### 6) Prepare for the bootstrap job to run
 ```bash
-kubectl apply -f tools/manifests/vault-cli.yaml
-kubectl -n platform exec -it vault-cli -- sh
+kubectl -n platform exec -it hashicorp-vault-0 --sh
 ```
-
-Inside the pod:
-
 ```bash
+export VAULT_CACERT=/vault/userconfig/vault-server-tls/ca.crt
 export VAULT_ADDR=https://hashicorp-vault.platform.svc:8200
-export VAULT_CACERT=/vault/ca/ca.crt
-vault login <ROOT_TOKEN>
-vault status
+export VAULT_TOKEN=<RootTokenProvidedByInit>
 ```
-
----
-
-## 7) Enable Kubernetes auth and create policies/roles
-
-Use the root token only for bootstrap.
-
-### a) Enable Kubernetes auth
+#### 6a) Create the bootstrap policy:
 ```bash
-vault auth enable kubernetes
-```
-
-### b) Configure Kubernetes auth
-```bash
-vault write auth/kubernetes/config \
-    kubernetes_host="https://<apiserver-host>:443" \
-    kubernetes_ca_cert=@/vault/ca/ca.crt \
-    token_reviewer_jwt=@/reviewer.jwt
-```
-
-### c) Create an admin policy
-Save as `admin.hcl`:
-```hcl
-path "*" {
-  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  cat <<EOF | vault policy write bootstrap-admin -
+# Manage auth backends
+path "sys/auth/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
-```
-Load it:
-```bash
-vault policy write admin admin.hcl
-```
 
-### d) Create an admin user (Userpass)
-```bash
-vault auth enable userpass
-vault write auth/userpass/users/<USERNAME> \
-    password="SuperSecret" \
-    policies=admin
-```
-
-### e) Create the operator policy
-Save as `vso-operator.hcl`:
-```hcl
-path "secret/*" {
-  capabilities = ["read", "list"]
+# Manage policies
+path "sys/policies/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
-```
-Load it:
-```bash
-vault policy write vso-operator vso-operator.hcl
+
+# Manage Kubernetes auth config and roles
+path "auth/kubernetes/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# Manage userpass users
+path "auth/userpass/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+EOF
 ```
 
-### f) Extract token and audience, then create operator role
-First, extract the token and decode the audience (this differs per cluster):
+#### 6b) Issue a token bound to that policy
 ```bash
-TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-PAYLOAD=$(echo "$TOKEN" | cut -d. -f2)
-echo "$PAYLOAD" | base64 -d
-```
-Note the `"aud"` value.
-
-Then create the role:
-```bash
-vault write auth/kubernetes/role/vso-operator \
-    bound_service_account_names=hashicorp-vault-secrets-operator-controller-manager \
-    bound_service_account_namespaces=platform \
-    policies=vso-operator \
-    ttl=24h \
-    audience="<aud-from-token>"
+vault token create -policy=bootstrap-admin -period=24h -renewable=true
 ```
 
+#### 6c) Store the token in Kubernetes
+Manual (outside the pod):
+```bash
+kubectl -n platform create secret generic vault-bootstrap-token \
+  --from-literal=token=<bootstrap-token>
+```
+
+#### 6d) (Optional) Create a username and password so we can disable the root token but still have admin access
+```bash
+kubectl -n platform create secret generic vault-bootstrap-user \
+  --from-literal=username=<USERNAME> \
+  --from-literal=password=<PASSWORD>
+```
 ---
-
-## 8) Verify operator and user accounts can authenticate
+## 7) Verify operator and user accounts can authenticate
 
 - **Manual check with Vault CLI (operator role):**
   ```bash
@@ -248,7 +204,7 @@ vault write auth/kubernetes/role/grafana \
     audience="<aud-from-token>"
 ```
 ---
-## 9) Cleanup
+## 8) Cleanup
 
 Once bootstrap is complete:
 
