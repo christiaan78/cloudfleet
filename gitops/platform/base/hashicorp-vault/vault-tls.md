@@ -4,14 +4,18 @@
 
 We want a **secure-by-default** platform where:
 
-1. **All in-cluster traffic to Vault is HTTPS.**
-   Clients inside Kubernetes (ESO, platform, CLI, probes) connect to
+1. **All in-cluster traffic to Vault is HTTPS.**  
+   Clients inside Kubernetes (ESO, platform, CLI, probes) connect to  
    `https://hashicorp-vault.platform.svc:8200`, and **validate** Vault’s identity.
 
-2. **Certificates are managed declaratively.**
+2. **Vault peers also communicate securely.**  
+   Raft storage requires Vault pods (`vault-0`, `vault-1`, `vault-2`) to talk to each other over TLS.  
+   Certificates must include **SANs for both service names and pod DNS names** so that peer-to-peer TLS handshakes succeed.
+
+3. **Certificates are managed declaratively.**  
    Certificates are issued automatically by **cert-manager**, not by hand, and live in Git (through CRDs, not raw key material).
 
-3. **Ingress is safe.**
+4. **Ingress is safe.**  
    Traefik reverse proxy **terminates at the edge**, but when it speaks to Vault it also uses **HTTPS upstream** and **verifies** Vault’s cert with a trusted CA—no “insecure” hops inside the cluster.
 
 This gives us encrypted, verified traffic end-to-end, reproducible with Flux, and portable across providers.
@@ -23,30 +27,56 @@ This gives us encrypted, verified traffic end-to-end, reproducible with Flux, an
 ### 1) Certificates (cert-manager)
 
 * We bootstrap a **self-signed CA** just once for the cluster (`vault.internal.ca`).
-* Using that CA, cert-manager issues a **server certificate** for Vault with DNS SANs that match the service names:
-
-  * `hashicorp-vault.platform.svc`
-  * `hashicorp-vault.platform.svc.cluster.local`
+* Using that CA, cert-manager issues a **server certificate** for Vault with DNS SANs that match:
+  * Service names:
+    * `hashicorp-vault.platform.svc`
+    * `hashicorp-vault.platform.svc.cluster.local`
+  * Pod DNS names:
+    * `hashicorp-vault-0.hashicorp-vault-internal`
+    * `hashicorp-vault-1.hashicorp-vault-internal`
+    * `hashicorp-vault-2.hashicorp-vault-internal`
+  * Loopback (`127.0.0.1`) for CLI inside pods.
 * cert-manager stores:
-
   * the **CA** in a Secret (`platform/vault-internal-ca`)
   * the **server cert** in a Secret (`platform/vault-server-tls`)
+
+---
+
+## Role of each file (`crt`, `key`, `ca`)
+
+- **`tls.crt` (certificate)**  
+  Public certificate presented by Vault during TLS handshake.  
+  Contains the SANs (service names, pod DNS names, IPs) that clients and peers validate against.
+
+- **`tls.key` (private key)**  
+  Private key corresponding to `tls.crt`.  
+  Used by Vault to prove ownership of the certificate during handshake. Must remain secret.
+
+- **`ca.crt` (certificate authority)**  
+  Public certificate of the internal CA that issued `tls.crt`.  
+  Clients (CLI, ESO, Traefik, Vault peers) use this to verify that Vault’s certificate is trusted.
+
+👉 In short:  
+- `tls.crt` = Vault’s identity card.  
+- `tls.key` = Vault’s private signature pen.  
+- `ca.crt` = The trusted authority that validates the identity card.
+
+---
 
 ### 2) Vault server (Helm)
 
 * Vault mounts `vault-server-tls` into the pod and configures its **listener** to use `tls.crt`, `tls.key`, and `ca.crt`.
 * We set `VAULT_CACERT` so the pod itself (and CLI/probes) trusts the same CA.
 * Readiness/liveness probes are adjusted to avoid false negatives while TLS is coming up.
+* Raft peers use the same cert bundle to authenticate each other — SANs must include pod DNS names or peer joins will fail.
 
 ### 3) Traefik → Vault (upstream TLS)
 
 * Traefik gets a **ServersTransport** object that says:
-
   * “When I call Vault, use SNI `hashicorp-vault.platform.svc` and trust this **CA**.”
-* We provide that CA to Traefik via a Secret (`ingress-traefik/vault-ca`) containing **`ca.crt`**.
+* We provide that CA to Traefik via a Secret (`ingress-traefik/vault-ca`) containing **`ca.crt`**.  
   *(For the PoC we keep this Secret **static** with the CA public cert—simple and explicit.)*
 * On the **Vault Service**, we add Traefik annotations telling it to:
-
   * use **HTTPS** upstream, and
   * use that **ServersTransport**.
 
@@ -151,6 +181,13 @@ Order is enforced with `dependsOn` (or by sequencing the infra Kustomizations be
 3. Client validates cert using the **CA** (`VAULT_CACERT` path or mounted trust).
 4. Requests proceed over **HTTPS**.
 
+### Vault peers → Vault peers (Raft)
+
+1. Vault‑1 resolves `hashicorp-vault-0.hashicorp-vault-internal` via kube-DNS.  
+2. TLS handshake between Vault‑1 and Vault‑0 using the same **server cert**.  
+3. Peer validates cert using the **CA** and checks SANs include the pod DNS name.  
+4. Raft replication proceeds securely over **HTTPS**.
+
 ### Browser → Traefik → Vault
 
 1. Browser hits `development.vault.internal` (port-forwarded to Traefik).
@@ -202,20 +239,9 @@ cert-manager is the **certificate authority fabric** of the cluster:
 
 ## Common pitfalls
 
-* **Putting Traefik’s “service.*” on the Ingress instead of the Service.**
-  Those options are **service-level** for the Kubernetes Ingress provider; set them on the **Vault Service** (we do this via Vault Helm values).
+* **Vault peer cert missing pod SANs.**  
+  Raft join fails with `x509: certificate is valid for … not …` if SANs don’t include pod DNS names. Always include both service names and pod DNS names.
 
-* **Not enabling cross-namespace CRD references in Traefik.**
-  Without `providers.kubernetesCRD.allowCrossNamespace: true`, a Service in `platform` cannot use a ServersTransport in `ingress-traefik`.
+* **Confusing cert roles.**  
+  Remember: `tls.crt` is what Vault shows, `tls.key` is what Vault proves, `ca.crt` is what everyone else trusts.
 
-* **Traefik CA Secret missing `ca.crt`.**
-  Traefik expects the key to be **`ca.crt`** (or `tls.ca`). If it’s empty/incorrect, Traefik will fall back to IP and you’ll see “x509: cannot validate certificate for 10.x.x.x because it doesn’t contain any IP SANs”.
-
-* **Vault server cert missing the right SANs.**
-  The server Certificate **must** include `hashicorp-vault.platform.svc` (and `.svc.cluster.local`). Otherwise SNI validation fails.
-
-* **Reconcile order.**
-  Ensure the TLS overlay (cert-manager + CA + server Certificate) applies **before** Vault, so the Secrets exist when the StatefulSet renders.
-
-* **Local port collisions.**
-  If port-forwards fail with “address already in use”, kill stale `kubectl port-forward` processes (our script does this automatically).
