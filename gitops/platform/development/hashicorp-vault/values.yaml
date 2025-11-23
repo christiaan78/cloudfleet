@@ -34,8 +34,8 @@ server:
 
   # This configures the Vault Statefulset to create a PVC for audit logs.
   # See https://www.vaultproject.io/docs/audit/index.html to know more
-  auditStorage:
-    enabled: true
+  #auditStorage:
+  #  enabled: true
 
   # mount cert-manager's TLS secret
   #volumes:
