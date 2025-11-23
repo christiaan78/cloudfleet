@@ -43,10 +43,10 @@ server:
   #    secret:
   #      secretName: vault-server-tls
 
-  volumeMounts:
-    - name: userconfig-vault-server-tls
-      mountPath: /vault/userconfig/vault-server-tls
-      readOnly: true
+  #volumeMounts:
+  #  - name: userconfig-vault-server-tls
+  #    mountPath: /vault/userconfig/vault-server-tls
+  #    readOnly: true
 
   # make CLI/probes trust the CA by default
   extraEnvironmentVars:
