@@ -12,3 +12,6 @@ configMapGenerator:
     namespace: observability
     files:
       - values.yaml=values.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
