@@ -19,7 +19,7 @@ data:
       kubernetes_ca_cert=@/vault/ca/ca.crt \
       token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token \
       issuer="$AUD" \
-      audiences="$AUD"
+      aud="$AUD"
 
 
     cat <<EOF | vault policy write admin -
