@@ -23,10 +23,10 @@ High-level components:
 - **Compute:** Kubernetes clusters provisioned with Cloudfleet  
 - **GitOps:** FluxCD controlling all YAML/Helm-based deployments  
 - **Networking:** Traefik ingress, internal/external DNS  
-- **Security:** Vault, SOPS, mTLS, Cloudflare (planned) 
+- **Security:** Vault, SOPS, TLS, Cloudflare (planned) 
 - **Observability:** Prometheus, Alertmanager, Grafana  
-- **Applications:** Podinfo, Nextcloud (planned), internal tools, AI workloads (planned)
-- **Infrastructure:** Terraform modules for cloud providers and networking (planned)
+- **Applications:** Podinfo, Nextcloud (planned), internal developer tools (panned), AI workloads (planned)
+- **Infrastructure:** Terraform modules for cloud providers and networking (planned), Ansible for VM provisioning and configuration management (planned)
 ➡️ Detailed architecture diagrams can be found in `/docs/architecture.md`.
 
 ---
@@ -39,7 +39,7 @@ clusters/          # Kubernetes clusters: dev, prod, multi-cloud
 infrastructure/    # Terraform modules and cloud provisioning
 kubernetes/        # Apps, core components, and platform services
 pipelines/         # CI/CD examples (GitHub Actions, GitLab)
-docs/              # Documentation, PoC notes, architecture, roadmap
+documentation/     # Documentation, PoC notes, architecture, roadmap
 scripts/           # Utility scripts
 
 ```
