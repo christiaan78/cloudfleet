@@ -16,10 +16,10 @@ data:
     AUD=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token | cut -d. -f2 | base64 -d | jq -r .aud)
     vault write auth/kubernetes/config \
       kubernetes_host="https://<apiserver-host>:443" \
-      kubernetes_ca_cert=@/vault/ca/ca.crt \
+      kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
       token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token \
       issuer="$AUD" \
-      aud="$AUD"
+      audiences="$AUD"
 
 
     cat <<EOF | vault policy write admin -
