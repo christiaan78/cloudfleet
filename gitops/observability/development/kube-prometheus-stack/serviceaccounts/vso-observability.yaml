@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vso-observability
+  namespace: observability
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: vault-auth
+  namespace: observability
+spec:
+  vaultConnectionRef: platform/vault-connection
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: vso-observability
+    serviceAccount: vso-observability

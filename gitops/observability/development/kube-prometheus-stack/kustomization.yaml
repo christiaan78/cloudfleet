@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - ingress-grafana.yaml
   - secrets
+  - serviceaccounts
 
 configMapGenerator:
   - name: kube-prometheus-stack-values
