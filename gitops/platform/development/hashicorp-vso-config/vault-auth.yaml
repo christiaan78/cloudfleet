@@ -21,3 +21,7 @@ spec:
     # ServiceAccount to use when authenticating to Vault
     # it is recommended to always provide a unique serviceAccount per Pod/application
     serviceAccount: hashicorp-vault-secrets-operator-controller-manager
+  allowedNamespaces:
+    - observability
+    - apps
+    - platform
