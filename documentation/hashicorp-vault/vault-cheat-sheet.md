@@ -40,11 +40,20 @@ A quick reference for HashiCorp Vault commands, concepts, and workflows.
   vault auth enable kubernetes
   ```
 - **Configure Kubernetes auth**
+  First get the issuer and the cluster aud. From a pod within the cluster (e.g. debug pod):
+  ```bash
+  TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+  PAYLOAD=$(echo "$TOKEN" | cut -d. -f2)
+  echo $PAYLOAD | base64 -d | jq .
+  ```
+Than configre the Kubernetes Auth method:
   ```bash
   vault write auth/kubernetes/config \
       kubernetes_host="https://<apiserver>:443" \
       kubernetes_ca_cert=@ca.crt \
       token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
+      issuer="value from previous command" \
+      audiences="<value you saw>"
   ```
 - **Enable userpass auth**
   ```bash

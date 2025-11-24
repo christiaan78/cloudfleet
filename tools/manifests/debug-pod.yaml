@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-toolbox
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug-toolbox
+  template:
+    metadata:
+      labels:
+        app: debug-toolbox
+    spec:
+      containers:
+      - name: toolbox
+        image: nicolaka/netshoot:latest   # includes dig, nc, curl, jq, etc.
+        command: ["sleep", "infinity"]
+        stdin: true
+        tty: true
+        resources:
+          requests:
+            cpu: 50m        # minimal CPU request
+            memory: 64Mi    # minimal memory request
+          limits:
+            cpu: 200m       # cap CPU usage
+            memory: 128Mi   # cap memory usage
+      restartPolicy: Always
