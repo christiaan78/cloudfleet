@@ -6,6 +6,4 @@ metadata:
 spec:
   address: https://hashicorp-vault.platform.svc:8200
   skipTLSVerify: false
-  caCertSecretRef:
-    name: vault-internal-ca
-    key: ca.crt
+  caCertSecretRef: vault-internal-ca
