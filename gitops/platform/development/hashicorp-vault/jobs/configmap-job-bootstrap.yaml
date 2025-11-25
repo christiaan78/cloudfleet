@@ -34,26 +34,10 @@ data:
 
     cat <<EOF | vault policy write vso-operator -
     # Observability namespace
-    path "secret/data/k8s/observability/*" {
+    path "secret/data/k8s/*" {
       capabilities = ["read"]
     }
-    path "secret/metadata/k8s/observability/*" {
-      capabilities = ["list"]
-    }
-
-    # Apps namespace
-    path "secret/data/k8s/apps/*" {
-      capabilities = ["read"]
-    }
-    path "secret/metadata/k8s/apps/*" {
-      capabilities = ["list"]
-    }
-
-    # Platform namespace
-    path "secret/data/k8s/platform/*" {
-      capabilities = ["read"]
-    }
-    path "secret/metadata/k8s/platform/*" {
+    path "secret/metadata/k8s/*" {
       capabilities = ["list"]
     }
     EOF
@@ -65,6 +49,13 @@ data:
     vault write auth/kubernetes/role/vso-operator \
         bound_service_account_names=hashicorp-vault-secrets-operator-controller-manager \
         bound_service_account_namespaces=platform \
+        policies=vso-operator \
+        ttl=24h \
+        audience=vault
+
+    vault write auth/kubernetes/role/vso-observability \
+        bound_service_account_names=vso-observability \
+        bound_service_account_namespaces=observability \
         policies=vso-operator \
         ttl=24h \
         audience=vault
