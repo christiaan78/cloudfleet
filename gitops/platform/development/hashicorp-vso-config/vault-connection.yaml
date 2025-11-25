@@ -4,6 +4,6 @@ metadata:
   name: vault-connection
   namespace: platform
 spec:
-  address: https://hashicorp-vault.platform.svc:8200
+  address: https://hashicorp-vault-internal.platform.svc:8200
   skipTLSVerify: false
   caCertSecretRef: vault-internal-ca

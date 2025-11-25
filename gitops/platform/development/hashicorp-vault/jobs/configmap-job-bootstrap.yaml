@@ -34,26 +34,26 @@ data:
 
     cat <<EOF | vault policy write vso-operator -
     # Observability namespace
-    path "secret/data/observability/*" {
+    path "secret/data/k8s/observability/*" {
       capabilities = ["read"]
     }
-    path "secret/metadata/observability/*" {
+    path "secret/metadata/k8s/observability/*" {
       capabilities = ["list"]
     }
 
     # Apps namespace
-    path "secret/data/apps/*" {
+    path "secret/data/k8s/apps/*" {
       capabilities = ["read"]
     }
-    path "secret/metadata/apps/*" {
+    path "secret/metadata/k8s/apps/*" {
       capabilities = ["list"]
     }
 
     # Platform namespace
-    path "secret/data/platform/*" {
+    path "secret/data/k8s/platform/*" {
       capabilities = ["read"]
     }
-    path "secret/metadata/platform/*" {
+    path "secret/metadata/k8s/platform/*" {
       capabilities = ["list"]
     }
     EOF
