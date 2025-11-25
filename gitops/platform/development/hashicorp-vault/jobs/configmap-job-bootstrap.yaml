@@ -67,6 +67,6 @@ data:
         bound_service_account_namespaces=platform \
         policies=vso-operator \
         ttl=24h \
-        audience="$AUD"
+        audience=vault
 
     echo "Bootstrap complete."

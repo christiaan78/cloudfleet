@@ -16,3 +16,5 @@ spec:
   kubernetes:
     role: vso-operator
     serviceAccount: vso-observability
+    audiences:
+      - vault
