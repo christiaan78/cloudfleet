@@ -1,0 +1,19 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuthGlobal
+metadata:
+  namespace: platform
+  name: vault-auth-global
+spec:
+  allowedNamespaces:
+    - observability
+    - platform
+    - apps
+  defaultAuthMethod: kubernetes
+  kubernetes:
+    audiences:
+    - vault
+    mount: kubernetes
+    role: vso-operator
+    serviceAccount: hashicorp-vault-secrets-operator-controller-manager
+    tokenExpirationSeconds: 600

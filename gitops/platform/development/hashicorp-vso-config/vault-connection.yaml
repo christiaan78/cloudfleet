@@ -1,9 +1,0 @@
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultConnection
-metadata:
-  name: vault-connection
-  namespace: platform
-spec:
-  address: https://hashicorp-vault-internal.platform.svc:8200
-  skipTLSVerify: false
-  caCertSecretRef: vault-internal-ca
