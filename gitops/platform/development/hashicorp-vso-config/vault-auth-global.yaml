@@ -3,7 +3,7 @@ apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuthGlobal
 metadata:
   namespace: platform
-  name: vault-auth-global
+  name: default
 spec:
   allowedNamespaces:
     - observability
