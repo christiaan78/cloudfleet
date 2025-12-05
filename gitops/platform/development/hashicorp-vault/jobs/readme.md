@@ -29,7 +29,7 @@ When you need Vault Secrets Operator access for a new namespace:
 2. Commit and push the updated ConfigMap to Git.
 3. Re‑run the bootstrap Job:
    - Either delete the old Job (`kubectl delete job vault-bootstrap-job -n platform`)  
-   - Or bump the Job name (e.g. `vault-bootstrap-job-v2`) so Flux/ArgoCD applies it again.
+   - Or bump the Job name (e.g. `vault-bootstrap-job-v2`) so Flux applies it again.
 4. Verify the Job completes and the new policy is active in Vault.
 
 ## Notes

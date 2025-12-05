@@ -130,7 +130,7 @@ path "auth/userpass/*" {
 EOF
 ```
 
-#### 6b) Issue a token bound to that policy
+#### 6b) Issue a bootstrap-token bound to that policy
 ```bash
 vault token create -policy=bootstrap-admin -period=24h -renewable=true
 ```
