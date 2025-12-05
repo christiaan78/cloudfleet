@@ -12,7 +12,7 @@ metadata:
 spec:
   kubernetes:
     role: vso-observability
-    serviceAccount: default
+    serviceAccount: vso-observability
   vaultAuthGlobalRef:
     allowDefault: true
     namespace: platform

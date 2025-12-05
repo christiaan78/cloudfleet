@@ -31,7 +31,6 @@ data:
         policies=admin
 
     cat <<EOF | vault policy write vso-operator -
-    # Observability namespace
     path "secret/data/k8s/*" {
       capabilities = ["read"]
     }
