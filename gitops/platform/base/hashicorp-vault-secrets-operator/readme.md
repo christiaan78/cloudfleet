@@ -249,7 +249,7 @@ vault write auth/kubernetes/login \
 
 If you get:
 
-* **403 service account not authorized** → mismatched SA name or namespace
+* **403 service account not authorized** → mismatched SA name or namespace. Or host of the Kubernetes Auth not set to https://kubernetes.default.svc/
 * **audience mismatch** → adjust audience in Vault role OR change SA projected audience
 * **issuer mismatch** → fix issuer in Vault config
 
@@ -260,6 +260,7 @@ If you get:
 ### To make Kubernetes → Vault auth work, you need:
 
 ✔ **Kubernetes Auth Method enabled**
+✔ **Kubernetes Auth Method configured to host "https://kubernetes.default.svc/"**
 ✔ **Kubernetes Auth Config** pointing to API, CA, issuer, audience
 ✔ **Vault Policy** granting secret paths
 ✔ **Vault Role** binding the Kubernetes SA → the Policy
