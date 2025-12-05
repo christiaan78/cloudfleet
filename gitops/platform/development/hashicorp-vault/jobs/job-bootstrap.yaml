@@ -19,7 +19,7 @@ spec:
         - name: VAULT_ADDR
           value: https://hashicorp-vault.platform.svc:8200
         - name: VAULT_CACERT
-          value: /vault/ca/ca.crt
+          value: /vault/userconfig/vault-server-tls/ca.crt
         - name: VAULT_TOKEN
           valueFrom:
             secretKeyRef:
