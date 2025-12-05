@@ -7,7 +7,7 @@ resources:
   - ../../base/hashicorp-vault
   - namespace.yaml
   - ingress.yaml
-  #- jobs
+  - jobs
 
 configMapGenerator:
   - name: vault-values
