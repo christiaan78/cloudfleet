@@ -104,12 +104,13 @@ The project is a continuous, long-term platform-engineering effort.
 See `documentation/roadmap.md` for the full, detailed plan.
 
 High-level next steps:
-- Finalize Hashicorp Vault Secrets Operator implementation
-- Expand Prometheus stack with alerting and dashboards
+- ~~Finalize Hashicorp Vault Secrets Operator implementation~~
+- ~~Expand Prometheus stack with alerting and dashboards~~
+- Add CI pipelines for validation and automation
+- Deploy Identity Provider (e.g. Athentik) and front all apps running in the cluster with a SSO option
 - Setup backup and restore for Hashicorp Vault
 - Deploy Nextcloud using GitOps
 - Expand platform with Terraform modules and Ansible playbook (DNS, firewall, cloud infra)
-- Add CI pipelines for validation and automation
 - Deploy Plane or OpenProject for project planning
 - Add AI workloads (on separate cloud provider)
 - Integrate cost monitoring
