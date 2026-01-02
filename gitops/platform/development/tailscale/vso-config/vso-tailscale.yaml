@@ -9,4 +9,4 @@ spec:
     serviceAccount: tailscale
   vaultAuthGlobalRef:
     allowDefault: true
-    namespace: tailscale
+    namespace: platform
