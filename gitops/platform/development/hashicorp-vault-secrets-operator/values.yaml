@@ -3,9 +3,9 @@
 
 defaultVaultConnection:
   enabled: true
-  address: "https://hashicorp-vault.platform.svc.cluster.local:8200"
+  address: "https://hashicorp-vault-active.platform.svc.cluster.local:8200"
   caCertSecret: "vault-internal-ca"
-  tlsServerName: "hashicorp-vault.platform.svc.cluster.local"
+  tlsServerName: "hashicorp-vault-active.platform.svc.cluster.local"
   skipTLSVerify: false
 
   auth:
