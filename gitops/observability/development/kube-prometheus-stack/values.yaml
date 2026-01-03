@@ -10,7 +10,7 @@ grafana:
   service:
     type: ClusterIP
     port: 80
-    targetPort: 80
+    targetPort: grafana
     annotations:
       tailscale.com/expose: "true"
       tailscale.com/hostname: "grafana"

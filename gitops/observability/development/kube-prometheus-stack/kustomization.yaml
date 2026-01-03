@@ -7,6 +7,7 @@ resources:
   - ingress-grafana.yaml
   - secrets
   - vso-config
+  - network-policies
 
 configMapGenerator:
   - name: kube-prometheus-stack-values
