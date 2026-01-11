@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - secrets
   - vso-config
+  - test-deployment.yaml
 
 #configMapGenerator:
 #- name: tailscale-values
