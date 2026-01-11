@@ -4,7 +4,7 @@ namespace: observability
 resources:
   - ../../base/kube-prometheus-stack
   - namespace.yaml
-  - ingress-grafana.yaml
+  #- ingress-grafana.yaml
   - secrets
   - vso-config
   - network-policies

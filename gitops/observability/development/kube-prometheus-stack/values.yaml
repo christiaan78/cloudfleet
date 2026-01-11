@@ -6,25 +6,19 @@ grafana:
     userKey: admin-user
     passwordKey: admin-password
 
-  # Optional: expose Grafana via a Service
   service:
     type: ClusterIP
     port: 80
-    targetPort: grafana
-    annotations:
-      tailscale.com/expose: "true"
-      tailscale.com/hostname: "grafana"
+    targetPort: 3000
 
-  # Optional: persistence
   persistence:
     enabled: false
 
-  # Optional: ingress (if you use Traefik)
   ingress:
-    enabled: false
-    annotations:
-      kubernetes.io/ingress.class: traefik
-    hosts:
-      - grafana.local
-    paths:
-      - /
+    enabled: true
+    ingressClassName: tailscale
+    defaultBackend:
+      service:
+        name: kube-prometheus-stack-grafana
+        port:
+          number: 80
