@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      containers:
+        - name: adguard
+          image: "adguard/adguardhome:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /opt/adguardhome/conf
+            - name: data
+              mountPath: /opt/adguardhome/work
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: adguard-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: adguard-data

@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: adguard
+  namespace: dns
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: adguard-http
+      port:
+        number: 3000
