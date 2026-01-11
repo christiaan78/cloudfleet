@@ -7,7 +7,7 @@ resources:
   - secrets
   - vso-config
   - test-deployment.yaml
-  - networkpolicy.yaml
+  #- networkpolicy.yaml
 
 #configMapGenerator:
 #- name: tailscale-values
