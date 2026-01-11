@@ -6,12 +6,7 @@ metadata:
 data:
   AdGuardHome.yaml: |
     bind_host: "0.0.0.0"
-    # Uncomment if you allow filtering without UI auth
-    # http:
-    #   auth_password: ""
-    #   auth_enabled: false
-    clients:
-      blocked_response: "0.0.0.0"
+
     dns:
       bind_hosts:
         - "0.0.0.0"
@@ -22,11 +17,13 @@ data:
       upstream_dns:
         - "1.1.1.1"
         - "8.8.8.8"
+      blocked_response: "0.0.0.0"
 
     filtering:
       enabled: true
       filters:
         - "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"
         - "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+    
     logging:
       level: info
