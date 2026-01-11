@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: adguard-data
+  name: adguard-data-pvc
   namespace: dns
 spec:
   accessModes:
@@ -10,3 +10,15 @@ spec:
     requests:
       storage: 2Gi
   storageClassName: hcloud-volumes
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adguard-config-pvc
+  namespace: dns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
