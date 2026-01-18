@@ -3,13 +3,13 @@
 
 defaultVaultConnection:
   enabled: true
-  address: "https://hashicorp-vault.platform.svc.cluster.local:8200"
+  address: "https://hashicorp-vault-internal.platform.svc.cluster.local:8200"
   caCertSecret: "vault-internal-ca"
-  tlsServerName: "hashicorp-vault.platform.svc.cluster.local"
+  tlsServerName: "hashicorp-vault-internal.platform.svc.cluster.local"
   skipTLSVerify: false
 
   auth:
     kubernetes:
       role: "vso-operator"
-      serviceAccount: "hashicorp-vault-secrets-operator-controller-manager"
+      serviceAccount: "default"
       tokenAudiences: vault
