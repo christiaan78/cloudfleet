@@ -4,7 +4,7 @@ namespace: platform
 
 resources:
   - ../../base/hashicorp-vault-secrets-operator
-  - namespace.yaml
+  #- namespace.yaml
   - vault-auth-global.yaml
 
 configMapGenerator:
