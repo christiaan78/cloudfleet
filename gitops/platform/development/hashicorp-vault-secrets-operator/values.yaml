@@ -11,5 +11,5 @@ defaultVaultConnection:
   auth:
     kubernetes:
       role: "vso-operator"
-      serviceAccount: "default"
+      serviceAccount: "hashicorp-vault-secrets-operator-controller-manager"
       tokenAudiences: vault

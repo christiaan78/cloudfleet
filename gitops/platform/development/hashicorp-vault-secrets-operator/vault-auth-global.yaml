@@ -9,6 +9,7 @@ spec:
     - observability
     - platform
     - apps
+    - pihole
   defaultAuthMethod: kubernetes
   kubernetes:
     audiences:
