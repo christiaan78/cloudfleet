@@ -5,7 +5,8 @@ resources:
   - deployment.yaml
   - ingress.yaml
   - namespace.yaml
-  - networkpolicy.yaml
+  - np-allow-bootstrap-to-pihole-http.yaml
+  - np-allow-tailscale-to-pihole.yaml
   - configmap.yaml
   - pvc.yaml
   - secret-webpassword.yaml

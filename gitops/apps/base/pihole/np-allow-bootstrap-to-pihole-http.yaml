@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-bootstrap-to-pihole-http
+  namespace: pihole
+spec:
+  podSelector:
+    matchLabels:
+      app: pihole
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: pihole-bootstrap
+    ports:
+    - protocol: TCP
+      port: 80
