@@ -48,7 +48,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        - name: WEBPASSWORD
+        - name: FTLCONF_webserver_api_password
           valueFrom:
             secretKeyRef:
               name: pihole-webpassword
