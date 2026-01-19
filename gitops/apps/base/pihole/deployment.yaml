@@ -91,6 +91,8 @@ spec:
               key: password
         - name: FTLCONF_misc_etc_dnsmasq_d
           value: "false"
+        - name: FTLCONF_dns_listeningMode
+          value: "ALL"
         - name: DNS1
           value: "1.1.1.1"
         - name: DNS2
