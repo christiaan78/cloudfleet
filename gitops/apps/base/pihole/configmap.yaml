@@ -1,16 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pihole-dnsmasq-cm
-  labels:
-    app: pihole
+  name: pihole-adlists
+  namespace: pihole
 data:
-  99-custom.conf: |
-    dnssec
-    dnssec-check-unsigned
-    log-queries=extra
-    log-facility=/var/log/pihole.log
-    local-ttl=2
-    dns-forward-max=500
-    stop-dns-rebind
-    rebind-domain-ok=/plex.direct/
+  adlists.txt: |-
+    https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.plus.txt
+    https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/tif.txt

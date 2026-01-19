@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pihole-bootstrap-adlists
+  namespace: pihole
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: pihole-bootstrap
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: bootstrap
+        image: alpine:3.20
+        env:
+        - name: PIHOLE_BASE
+          value: "http://pihole-service.pihole.svc.cluster.local"
+        - name: FTLCONF_webserver_api_password
+          valueFrom:
+            secretKeyRef:
+              name: pihole-webpassword
+              key: password
+        volumeMounts:
+        - name: adlists
+          mountPath: /config
+        command: ["/bin/sh","-ceu"]
+        args:
+        - |
+          apk add --no-cache curl jq
+
+          echo "Authenticating to Pi-hole API..."
+          AUTH_JSON="$(curl -fsSL \
+            -X POST "${PIHOLE_BASE}/api/auth" \
+            -H "accept: application/json" \
+            -H "content-type: application/json" \
+            --data "{\"password\":\"${PIHOLE_PASSWORD}\"}")"
+
+          SID="$(echo "$AUTH_JSON" | jq -r '.session.sid // empty')"
+          CSRF="$(echo "$AUTH_JSON" | jq -r '.session.csrf // empty')"
+
+          if [ -z "$SID" ]; then
+            echo "ERROR: Could not obtain SID from /api/auth response:"
+            echo "$AUTH_JSON"
+            exit 1
+          fi
+
+          auth_headers() {
+            # Some examples use 'sid', the docs describe session IDs; sending both headers is robust.
+            # CSRF is included when present.
+            echo "-H" "sid: ${SID}" "-H" "X-FTL-SID: ${SID}"
+            [ -n "$CSRF" ] && echo "-H" "X-FTL-CSRF: ${CSRF}"
+          }
+
+          echo "Upserting adlists..."
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            case "$url" in \#*) continue ;; esac
+
+            enc="$(printf '%s' "$url" | jq -sRr @uri)"
+
+            payload='{"comment":"managed-by-gitops","type":"block","enabled":true,"groups":[0]}'
+
+            code="$(curl -sS -o /dev/null -w '%{http_code}' \
+              -X PUT "${PIHOLE_BASE}/api/lists/${enc}?type=block" \
+              -H "accept: application/json" \
+              -H "content-type: application/json" \
+              $(auth_headers) \
+              --data "$payload")"
+
+            echo "  ${url} -> HTTP ${code}"
+          done < /config/adlists.txt
+
+          echo "Running gravity update..."
+          # This endpoint streams CLI-like output; allow it to run a while.
+          curl -sS \
+            -X POST "${PIHOLE_BASE}/api/action/gravity" \
+            $(auth_headers) \
+            --max-time 1800 || true
+
+          echo "Restarting DNS..."
+          curl -sS \
+            -X POST "${PIHOLE_BASE}/api/action/restartdns" \
+            $(auth_headers) \
+            -o /dev/null || true
+
+          echo "Done."
+      volumes:
+      - name: adlists
+        configMap:
+          name: pihole-adlists

@@ -6,9 +6,10 @@ resources:
   - ingress.yaml
   - namespace.yaml
   - networkpolicy.yaml
-  #- configmap.yaml
+  - configmap.yaml
   - pvc.yaml
   - secret-webpassword.yaml
   - service.yaml
   - serviceaccount.yaml
   - vso-pihole.yaml
+  - bootstrap-job.yaml
