@@ -59,6 +59,8 @@ spec:
           value: "all"
         - name: PIHOLE_DNS_
           value: "1.1.1.1;9.9.9.9"
+        - name: DNSMASQ_USER
+          value: "root"
         ports:
         - containerPort: 80
           name: http
@@ -93,7 +95,8 @@ spec:
         - name: pihole-etc
           mountPath: /etc/pihole/
         - name: dnsmasq-etc
-          mountPath: /etc/dnsmasq.d/
+          mountPath: /etc/dnsmasq.d/99-custom.conf
+          subPath: 99-custom.conf
         - name: tmp
           mountPath: /tmp
       volumes:
@@ -103,8 +106,5 @@ spec:
       - name: dnsmasq-etc
         configMap:
           name: pihole-dnsmasq-cm
-          items:
-          - key: dnsmasq.conf
-            path: dnsmasq.conf
       - name: tmp
         emptyDir: {}

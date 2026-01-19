@@ -5,7 +5,7 @@ metadata:
   labels:
     app: pihole
 data:
-  dnsmasq.conf: |
+  99-custom.conf: |
     cache-size=10000
     dnssec
     dnssec-check-unsigned
