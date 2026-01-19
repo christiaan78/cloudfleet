@@ -5,14 +5,11 @@ metadata:
   namespace: pihole
 spec:
   ingressClassName: tailscale
-  rules:
-  - host: pihole
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: pihole-service
-            port:
-              number: 80
+  tls:
+  - hosts:
+    - pihole
+  defaultBackend:
+    service:
+      name: pihole-service
+      port:
+        number: 80
