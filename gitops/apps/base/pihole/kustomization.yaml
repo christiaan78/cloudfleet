@@ -6,7 +6,7 @@ resources:
   - ingress.yaml
   - namespace.yaml
   - networkpolicy.yaml
-  - configmap.yaml
+  #- configmap.yaml
   - pvc.yaml
   - secret-webpassword.yaml
   - service.yaml
