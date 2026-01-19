@@ -39,6 +39,8 @@ spec:
             - CHOWN
             - SETGID
             - SETUID
+            - DAC_OVERRIDE
+            - FOWNER
         env:
         - name: TZ
           value: "Europe/Amsterdam"
