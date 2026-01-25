@@ -22,9 +22,11 @@ resource "cloudfleet_cfke_node_join_information" "scaleway" {
 resource "scaleway_instance_server" "worker" {
   count = var.worker_count
 
-  name  = "cfke-scaleway-worker-${count.index + 1}"
+  name  = "cfke-scaleway-worker-${var.scaleway_zone}-${count.index + 1}"
   type  = var.worker_type
   image = var.worker_image
+
+  security_group_id = scaleway_instance_security_group.cfke_worker.id
 
   user_data = {
     cloud-init = cloudfleet_cfke_node_join_information.scaleway.rendered
