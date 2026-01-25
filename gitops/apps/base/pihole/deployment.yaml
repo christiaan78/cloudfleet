@@ -5,7 +5,6 @@ metadata:
   labels:
     app: pihole
 spec:
-  replicas: 1 # Move this values to the DEVELOPMENT overlay
   strategy:
     type: Recreate
   selector:

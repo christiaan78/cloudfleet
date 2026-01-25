@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: pihole
 resources:
   - hetzner
+  # - scaleway

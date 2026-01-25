@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole-deployment
+spec:
+  replicas: 1
+  template:
+    spec:
+      nodeSelector:
+        cfke.io/provider: hetzner
+        cfke.io/subregion: central
