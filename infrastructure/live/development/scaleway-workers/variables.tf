@@ -2,12 +2,12 @@ variable "cfke_cluster_id" { type = string }
 
 variable "scaleway_region" {
   type    = string
-  default = "fr-par"
+  default = "nl-ams"
 }
 
 variable "scaleway_zone" {
   type    = string
-  default = "fr-par-1"
+  default = "nl-ams-1"
 }
 
 variable "worker_type" {
