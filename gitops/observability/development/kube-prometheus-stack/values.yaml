@@ -1,6 +1,8 @@
 grafana:
   enabled: true
 
+  defaultDashboardsTimezone: cet
+
   admin:
     existingSecret: grafana
     userKey: admin-user
@@ -21,12 +23,28 @@ grafana:
     finalizers:
       - kubernetes.io/pvc-protection
 
-
   ingress:
     enabled: true
     ingressClassName: tailscale
     hosts:
       - grafana
+    paths:
+      - /
+    pathType: Prefix
+
+alertmanager:
+  enabled: true
+
+  service:
+    type: ClusterIP
+    port: 9093
+    targetPort: 9093
+
+  ingress:
+    enabled: true
+    ingressClassName: tailscale
+    hosts:
+      - alertmanager
     paths:
       - /
     pathType: Prefix
