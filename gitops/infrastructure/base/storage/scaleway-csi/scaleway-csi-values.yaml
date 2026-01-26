@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: scaleway-csi-values
-  namespace: kube-system
+  namespace: platform
 data:
   scaleway-csi-values.yaml: |
     controller:

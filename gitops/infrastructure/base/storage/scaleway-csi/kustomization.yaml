@@ -8,7 +8,7 @@ resources:
 
 configMapGenerator:
   - name: scaleway-csi-values
-    namespace: kube-system
+    namespace: platform
     files:
       - scaleway-csi-values.yaml
 
