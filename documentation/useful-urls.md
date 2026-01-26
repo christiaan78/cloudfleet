@@ -17,6 +17,7 @@
 - Traefik: https://artifacthub.io/packages/helm/traefik/traefik
 - Traefik CRD's: https://artifacthub.io/packages/helm/traefik/traefik-crds/1.0.0
 - Tailscale Operator: https://artifacthub.io/packages/helm/tailscale/tailscale-operator?utm_source=chatgpt.com
+- Scaleway CSI Driver: https://artifacthub.io/packages/helm/scaleway-charts/scaleway-csi
 
 # Install and config docs
 - Hetzner Cloud CSI: https://cloudfleet.ai/tutorials/cloud/use-persistent-volumes-with-cloudfleet-on-hetzner/
