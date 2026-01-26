@@ -9,7 +9,7 @@ This repository contains the full infrastructure, Kubernetes manifests and tooli
 
 - Build a real-world multi-cloud platform (Hetzner, Scaleway and others)
 - Use GitOps (Flux) as the control plane for all Kubernetes workloads
-- Standardize infrastructure using Terraform and reusable modules (future)
+- Standardize infrastructure using Terraform and reusable modules
 - Deploy production-style services (Vault, Traefik, Prometheus stack, etc.)
 - Host real applications, including Nextcloud and internal developer tooling
 - Showcase platform engineering capabilities in a long-term, public repository
@@ -21,11 +21,11 @@ This repository contains the full infrastructure, Kubernetes manifests and tooli
 High-level components:  
 - **Compute:** Kubernetes clusters provisioned with Cloudfleet  
 - **GitOps:** FluxCD controlling all YAML/Helm-based deployments  
-- **Networking:** Traefik ingress, internal/external DNS  
-- **Security:** Vault, SOPS, TLS, Cloudflare (planned) 
+- **Networking:** Tailscale (to be replaced by Headscale) ingress, internal/external DNS
+- **Security:** Vault, SOPS, TLS 
 - **Observability:** Prometheus, Alertmanager, Grafana  
-- **Applications:** Podinfo, Nextcloud (planned), internal developer tools (panned), AI workloads (planned)
-- **Infrastructure:** Terraform modules for cloud providers and networking (planned), Ansible for VM provisioning and configuration management (planned)
+- **Applications:** Podinfo, Nextcloud (planned), internal developer tools (planned), AI workloads (planned)
+- **Infrastructure:** Terraform modules for cloud providers and networking, Ansible for VM provisioning and configuration management (planned)
 
 ---
 
@@ -54,7 +54,7 @@ tools/             # Utility manifests, scripts
 - Cert manager
 - Hetzner Cloud CSI
 
-Upcoming deployments are tracked in the project roadmap.
+Upcoming deployments are tracked on the project [backlog](https://github.com/users/christiaan78/projects/2).
 
 ---
 
@@ -62,7 +62,6 @@ Upcoming deployments are tracked in the project roadmap.
 
 This repository uses:
 - **HashiCorp Vault** for runtime secrets and platform services  
-- **Terraform Vault provider** (planned) for dynamic secret generation
 - - **SOPS + age** for GitOps-safe secret encryption (if Vault cannot be used)
 
 More info: `/documentation/secrets.md`
@@ -100,29 +99,6 @@ Each environment has its own:
 
 ---
 
-## Roadmap
-
-The project is a continuous, long-term platform-engineering effort.  
-See `documentation/roadmap.md` for the full, detailed plan.
-
-High-level next steps:
-- ~~Finalize Hashicorp Vault Secrets Operator implementation~~
-- ~~Expand Prometheus stack with alerting and dashboards~~
-- Deploy Pi-Hole for DNS filtering and testing multi-cloud setup
-- Add CI pipeline for managing the Tailscale ACLs
-- Expand platform with Terraform modules and Ansible playbook to add K8s worker nodes to the cluster
-- Deploy 2nd replica of Pi-Hole on Scaleway node. 
-- Setup backup and restore for Hashicorp Vault
-- Deploy Nextcloud using GitOps
-- Deploy Identity Provider (e.g. Athentik) and front all apps running in the cluster with a SSO option
-- Add CI pipelines for validation and automation
-- Deploy Plane or OpenProject for project planning
-- Add AI workloads (on separate cloud provider)
-- Integrate cost monitoring
-- Implement Vault auto-unseal with cloud KMS
-
----
-
 ## Technologies Used
 
 - Kubernetes  
@@ -130,7 +106,7 @@ High-level next steps:
 - Terraform
 - Ansible
 - Traefik  
-- Vault
+- Hashicorp Vault
 - Prometheus stack  
 - Cloudfleet  
 - GitHub Actions  
