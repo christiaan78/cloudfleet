@@ -1,6 +1,6 @@
-# Cloud-Agnostic Platform
+# CloudLab Platform
 
-A personal, evolving platform-engineering project focused on building an automated, secure, and cloud-agnostic application platform using GitOps.  
+A personal, evolving platform-engineering project focused on building an automated, secure, and provider-agnostic application platform using GitOps.  
 This repository contains the full infrastructure, Kubernetes manifests and tooling that power the platform.
 
 ---
