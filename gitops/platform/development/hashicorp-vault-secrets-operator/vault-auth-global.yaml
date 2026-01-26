@@ -10,6 +10,7 @@ spec:
     - platform
     - apps
     - pihole
+    - kube-system
   defaultAuthMethod: kubernetes
   kubernetes:
     audiences:

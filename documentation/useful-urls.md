@@ -6,6 +6,7 @@
 - PodInfo: https://github.com/stefanprodan/podinfo/tree/master/charts/podinfo
 - Traefik: https://github.com/traefik/traefik-helm-chart
 - Tailscale Operator: https://pkgs.tailscale.com/helmcharts
+- Scaleway CSI: https://github.com/scaleway/scaleway-csi
 
 # ArtifactHUB links
 - Vault: https://artifacthub.io/packages/helm/hashicorp/vault 

@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - helmrelease.yaml
+  - helmrepository.yaml
+  - secrets
+  - vso-config
+
+configMapGenerator:
+  - name: hetzner-csi-values
+    namespace: kube-system
+    files:
+      - scaleway-csi-values.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

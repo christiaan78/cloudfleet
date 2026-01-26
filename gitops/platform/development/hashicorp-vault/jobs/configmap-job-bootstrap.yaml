@@ -77,4 +77,11 @@ data:
         ttl=24h \
         audience=vault
 
+    vault write auth/kubernetes/role/vso-kube-system \
+        bound_service_account_names=vso-kube-system \
+        bound_service_account_namespaces=kube-system \
+        policies=vso-operator \
+        ttl=24h \
+        audience=vault
+
     echo "Bootstrap complete."

@@ -1,0 +1,26 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: scaleway-csi
+spec:
+  interval: 10m
+  timeout: 5m
+  chart:
+    spec:
+      chart: scaleway-csi
+      version: "0.3.5"
+      sourceRef:
+        kind: HelmRepository
+        name: scaleway-csi
+      interval: 5m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  valuesFrom:
+    - kind: ConfigMap
+      name: scaleway-csi-values
+      valuesKey: scaleway-csi-values.yaml
+    - kind: Secret
+      name: scaleway-csi-secrets
+      valuesKey: vaulues.yaml
