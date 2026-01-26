@@ -12,5 +12,4 @@ resources:
   - secret-webpassword.yaml
   - service.yaml
   - serviceaccount.yaml
-  - vso-pihole.yaml
   - bootstrap-job.yaml
