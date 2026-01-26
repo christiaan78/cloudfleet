@@ -9,4 +9,12 @@ spec:
       nodeSelector:
         cfke.io/provider: scaleway
         cfke.io/zone: nl-ams-1
+      containers:
+        - name: pihole
+          env:
+            - name: FTLCONF_webserver_api_password
+              valueFrom:
+                secretKeyRef:
+                  name: scw-pihole-webpassword
+                  key: password
         
