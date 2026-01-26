@@ -23,4 +23,4 @@ spec:
       valuesKey: scaleway-csi-values.yaml
     - kind: Secret
       name: scaleway-csi-secrets
-      valuesKey: vaulues.yaml
+      valuesKey: values.yaml
