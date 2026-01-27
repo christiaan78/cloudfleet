@@ -26,6 +26,8 @@ data:
                       values:
                         - scaleway-csi
                 topologyKey: "kubernetes.io/hostname"
+      scaleway:
+        existingSecretName: "scaleway-csi-secrets"
 
     node:
       priorityClassName: "system-node-critical"
