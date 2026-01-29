@@ -5,7 +5,11 @@ resources:
   - helmrepository.yaml
   - secrets
   - vso-config
+  - patch-scw-bssd-nondefault.yaml
 
+patchesStrategicMerge:
+  - storageclasses/patch-scw-bssd-nondefault.yaml
+  
 configMapGenerator:
   - name: scaleway-csi-values
     namespace: platform
