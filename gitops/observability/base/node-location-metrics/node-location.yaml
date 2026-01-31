@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: node-location
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-location-metrics
+  namespace: node-location
+data:
+  metrics.prom: |
+    # HELP k8s_region_lat Latitude for a cloud region (city centroid)
+    # TYPE k8s_region_lat gauge
+    k8s_region_lat{provider="hetzner",region="fsn1",city="Falkenstein"} 50.477881
+    k8s_region_lat{provider="hetzner",region="hel1",city="Helsinki"} 60.169520
+    k8s_region_lat{provider="hetzner",region="nbg1",city="Nuremberg"} 49.460983
+    k8s_region_lat{provider="scaleway",region="nl-ams",zone="nl-ams-1",city="Amsterdam"} 52.370216
+
+    # HELP k8s_region_lon Longitude for a cloud region (city centroid)
+    # TYPE k8s_region_lon gauge
+    k8s_region_lon{provider="hetzner",region="fsn1",city="Falkenstein"} 12.371289
+    k8s_region_lon{provider="hetzner",region="hel1",city="Helsinki"} 24.935450
+    k8s_region_lon{provider="hetzner",region="nbg1",city="Nuremberg"} 11.061859
+    k8s_region_lon{provider="scaleway",region="nl-ams",zone="nl-ams-1",city="Amsterdam"} 4.895168
+
+  default.conf: |
+    server {
+      listen 8080;
+      location = /metrics {
+        default_type text/plain;
+        alias /etc/node-location/metrics.prom;
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-location-metrics
+  namespace: node-location
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-location-metrics
+  template:
+    metadata:
+      labels:
+        app: node-location-metrics
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: cm
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: cm
+              mountPath: /etc/node-location/metrics.prom
+              subPath: metrics.prom
+      volumes:
+        - name: cm
+          configMap:
+            name: node-location-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-location-metrics
+  namespace: node-location
+  labels:
+    app: node-location-metrics
+spec:
+  selector:
+    app: node-location-metrics
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

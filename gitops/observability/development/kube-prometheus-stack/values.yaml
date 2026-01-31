@@ -1,3 +1,7 @@
+kube-state-metrics:
+  metricLabelsAllowlist:
+    - nodes=[topology.kubernetes.io/region,topology.kubernetes.io/zone]
+
 grafana:
   enabled: true
 
