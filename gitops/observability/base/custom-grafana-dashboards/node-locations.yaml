@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-node-locations
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+data:
+  node-locations.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": 84,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 14,
+            "w": 8,
+            "x": 0,
+            "y": 0
+          },
+          "id": 2,
+          "options": {
+            "basemap": {
+              "config": {
+                "server": "streets",
+                "showLabels": true,
+                "theme": "light"
+              },
+              "name": "Layer 0",
+              "type": "carto"
+            },
+            "controls": {
+              "mouseWheelZoom": true,
+              "showAttribution": true,
+              "showDebug": false,
+              "showMeasure": false,
+              "showScale": false,
+              "showZoom": true
+            },
+            "layers": [
+              {
+                "config": {
+                  "border": 0,
+                  "color": "transparent",
+                  "crop": false,
+                  "kind": "square",
+                  "radius": 28,
+                  "shadow": false,
+                  "src": "logo_url"
+                },
+                "location": {
+                  "latitude": "Value #lat",
+                  "longitude": "Value #lon",
+                  "mode": "coords"
+                },
+                "name": "Layer 2",
+                "tooltip": true,
+                "type": "photos"
+              }
+            ],
+            "tooltip": {
+              "mode": "details"
+            },
+            "view": {
+              "allLayers": true,
+              "id": "fit",
+              "lat": 46,
+              "lon": 14,
+              "padding": 20,
+              "zoom": 15
+            }
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "label_replace(\n  k8s_region_lat{provider=\"hetzner\"},\n  \"logo_url\",\n  \"https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/hetzner-h.png\",\n  \"provider\",\n  \".*\"\n)\nOR\nlabel_replace(\n  k8s_region_lat{provider=\"scaleway\"},\n  \"logo_url\",\n  \"https://cdn.brandfetch.io/idjhoSQeZo/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1692978655720\",\n  \"provider\",\n  \".*\"\n)\n",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "lat"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "label_replace(\n  k8s_region_lon{provider=\"hetzner\"},\n  \"logo_url\",\n  \"https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/hetzner-h.png\",\n  \"provider\",\n  \".*\"\n)\nOR\nlabel_replace(\n  k8s_region_lon{provider=\"scaleway\"},\n  \"logo_url\",\n  \"https://cdn.brandfetch.io/idjhoSQeZo/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1692978655720\",\n  \"provider\",\n  \".*\"\n)\n",
+              "format": "table",
+              "hide": false,
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "lon"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "label_replace(\n  count by (label_topology_kubernetes_io_region) (\n    kube_node_labels{label_topology_kubernetes_io_region!=\"\"}\n  ),\n  \"region\", \"$1\",\n  \"label_topology_kubernetes_io_region\", \"(.*)\"\n)\n",
+              "format": "table",
+              "hide": false,
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "node-count"
+            }
+          ],
+          "title": "Node Locations",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {}
+            },
+            {
+              "id": "joinByField",
+              "options": {
+                "byField": "region",
+                "mode": "outer"
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "geomap"
+        }
+      ],
+      "preload": false,
+      "schemaVersion": 41,
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Cluster: Multi-Cloud",
+      "uid": "b0860e51-385d-47f9-be30-ac5cd7e855ee",
+      "version": 12
+    }
