@@ -110,28 +110,64 @@ kube_node_labels{label_topology_kubernetes_io_region!=""}
 Here’s an updated version of that section with the **exact Grafana steps** that are required to make the join work (the crucial bit is converting labels → fields first).
 
 
-## Using in Grafana (Geomap with region coordinates)
+Here is the updated section including the **Photos layer** so provider logos can be rendered on the map.
+
+---
+
+## Using in Grafana (Geomap with region coordinates + provider logos)
 
 Grafana Geomap requires actual **`lat` / `lon` fields**.
-Prometheus exposes `region`, `provider`, `city` as **labels**, which must first be converted into **fields (columns)** before you can join data.
+Prometheus exposes `region`, `provider`, `city` as **labels**, which must first be converted into **fields (columns)** before data can be joined.
+
+To render **provider logos** on the map, the latitude/longitude queries add a `logo_url` label via PromQL.
+
+---
 
 ### Queries (set all to **Instant**)
 
-Add three Prometheus queries to the panel:
+Add three Prometheus queries to the panel.
 
-**A — Region latitude**
-
-```promql
-k8s_region_lat
-```
-
-**B — Region longitude**
+#### **A — Region latitude + logo**
 
 ```promql
-k8s_region_lon
+label_replace(
+  k8s_region_lat{provider="hetzner"},
+  "logo_url",
+  "https://upload.wikimedia.org/wikipedia/commons/0/0c/Hetzner_Logo.svg",
+  "provider",
+  ".*"
+)
+OR
+label_replace(
+  k8s_region_lat{provider="scaleway"},
+  "logo_url",
+  "https://upload.wikimedia.org/wikipedia/commons/3/3b/Scaleway_logo.png",
+  "provider",
+  ".*"
+)
 ```
 
-**C — Node count per region (rename label to `region`)**
+#### **B — Region longitude + logo**
+
+```promql
+label_replace(
+  k8s_region_lon{provider="hetzner"},
+  "logo_url",
+  "https://upload.wikimedia.org/wikipedia/commons/0/0c/Hetzner_Logo.svg",
+  "provider",
+  ".*"
+)
+OR
+label_replace(
+  k8s_region_lon{provider="scaleway"},
+  "logo_url",
+  "https://upload.wikimedia.org/wikipedia/commons/3/3b/Scaleway_logo.png",
+  "provider",
+  ".*"
+)
+```
+
+#### **C — Node count per region (rename label to `region`)**
 
 ```promql
 label_replace(
@@ -143,14 +179,14 @@ label_replace(
 )
 ```
 
-> This ensures all three queries expose a common `region="..."` label.
+> This ensures all queries expose a common `region="..."` label and include `provider`, `city`, and `logo_url`.
 
 
 ### Transformations (order matters)
 
 1. **Labels to fields**
 
-   * This converts Prometheus labels (`region`, `provider`, `city`) into actual columns.
+   * Converts Prometheus labels (`region`, `provider`, `city`, `logo_url`) into columns.
    * Without this step, **Join by field will not work**.
 
 2. **Join by field**
@@ -165,20 +201,32 @@ label_replace(
      * `k8s_region_lat` → `lat`
      * `k8s_region_lon` → `lon`
      * node count value → `node_count`
-   * Keep: `region`, `provider`, `city`, `lat`, `lon`, `node_count`
+   * Keep: `region`, `provider`, `city`, `logo_url`, `lat`, `lon`, `node_count`
 
 
 ### Geomap configuration
+
+#### Base layer (optional)
 
 * Visualization: **Geomap**
 * Location mode: **Latitude/Longitude fields**
 
   * Latitude field: `lat`
   * Longitude field: `lon`
-* Tooltip fields: `provider`, `city`, `region`, `node_count`
-* Marker size: `node_count` (optional but visually useful)
 
-This produces one marker per region, sized by the number of nodes running there.
+#### Photos layer (provider logos)
+
+Add a **Photos layer** on top of the map:
+
+* Image source field: `logo_url`
+* Latitude field: `lat`
+* Longitude field: `lon`
+* Adjust image size for readability
+* Tooltip fields: `provider`, `city`, `region`, `node_count`
+
+This renders one provider logo per region, visually proving **multi-provider, multi-region** deployment.
+
+You can remove standard markers entirely and rely only on the Photos layer for a cleaner, diagram-like result.
 
 
 ## Extending the mapping
@@ -202,7 +250,6 @@ count by (region) (k8s_region_lat)
 ```
 
 If this returns anything, add that `region` to `metrics.prom`.
-
 
 ## Notes / pitfalls
 
