@@ -5,7 +5,6 @@ resources:
   - helmrepository.yaml
   - secrets
   - vso-config
-  #- storageclass-defaults.yaml
 
 configMapGenerator:
   - name: scaleway-csi-values
